@@ -8,13 +8,13 @@ body {
 .login-content {
 	max-width: 450px;
     width: 100%;
-    height: 550px;
+    height: 80%;
     z-index: 1;
     position: absolute;
     top: 50%;
     left: 50%;
     margin-left: -200px;
-	margin-top: -286px;
+	margin-top: -350px;
 	border-radius: 8px;
   background: #282d32;
 }
