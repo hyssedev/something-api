@@ -1,0 +1,55 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="{% static 'logo.png' %}"/>
+    <link rel="stylesheet" href="{% static 'form_styles.css' %}">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="Something API is a fast REST API written in Python using Django with many fun features and image manipulation endpoints." />
+    <meta name="keywords" content="API,Discord,Fun,Animals,Images,REST API,Premium,Requests" />
+    <meta name="author" content="Ionut Sauciuc" />
+    <meta name="theme-color" content="#212529">
+    <meta property="og:title" content="Something API" />
+    <meta property="og:description" content="Something API is a fast REST API written in Python using Django with many fun features and image manipulation endpoints." />
+    <!-- <meta property="og:url" content="todo" /> -->
+    <meta property="og:image" content="{% static 'logo.png' %}" />
+    <meta property="og:image:width" content="64" />
+    <meta property="og:image:height" content="64" />
+    <title>Something API - Login</title>
+</head>
+<body style="background-color: #212529; color:white" class="d-flex flex-column h-100">
+    <div class="container">
+		<div class="row">
+			<div class="col-sm-12 col-md-12 col-lg-12">
+				<div class="card login-content shadow-lg border-0">
+					<div class="card-body">
+						<div class="text-center">
+							<img class="logo" src="https://cdn3.iconfinder.com/data/icons/galaxy-open-line-gradient-i/200/account-256.png">
+						</div>
+					<h3 class="text-logo">Sign In</h3>
+					<br>
+					<form class="text-center">
+						<input style="background-color: #212529;" class="form-control border-0 text-white" type="" name="" placeholder="Type Your Username">
+						<br>
+						<input style="background-color: #212529;" class="form-control border-0 text-white" type="password" name="" placeholder="Type Your Password">
+						<br>
+						<button class="btn btn-info btn-sm border-0" type="submit" name="submit">Sign In</button>
+						<p class="forgot"><a href="">Forgot Password?</a></p>
+					</form>
+					</div>
+					<div class="nomember">
+						<p class="text-center">Not a member? <a href="">Create an Account</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+</body>
+</html>

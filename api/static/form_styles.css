@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
+body {
+	background-color: #212529;
+	font-family: 'Lato', sans-serif;
+}
+
+.login-content {
+	max-width: 450px;
+    width: 100%;
+    height: 550px;
+    z-index: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -200px;
+	margin-top: -286px;
+	border-radius: 8px;
+  background: #282d32;
+}
+
+.logo {
+	width: 128px;
+	height: 128px;
+	margin: 5px;
+}
+
+.text-logo {
+	text-align: center;
+	font-weight: bold;
+	font-size: 32px;
+  color: white;
+}
+
+.form-control {
+	width: 18rem;
+	height: 3rem;
+	left: 65px;
+	position: relative;
+	border-radius: 5px;
+	background-color: #242529;
+}
+
+.btn {
+	font-size: 22px;
+	background-color: #0dcaf0;
+	border: none;
+	width: 18rem;
+	height: 3rem;
+	border-radius: 5px;
+}
+
+.btn:hover {
+    background-color: #0ba8c8;
+}
+
+.nomember {
+	background-color: #e4dede;
+	padding: 10px;
+	padding-top: 20px;
+	border-radius: 0px 0px 5px 5px;
+  color: white;
+  background: #282d32;
+}
+
+.nomember a{
+	text-decoration: none;
+  color: #0dcaf0;
+}
+
+.nomember a:hover {
+    color: #0ba8c8;
+}
+
+.forgot {
+	position: relative;
+	right: -20%;
+}
+
+.forgot a {
+	text-decoration: none;
+	font-size: 14px;
+	color: #0dcaf0;
+}
+
+.forgot a:hover {
+    color: #0ba8c8;
+}
+
+/*support google chrome*/
+.form-control::-webkit-input-placeholder{
+	color: #00000036;
+}
+
+/*support mozilla*/
+.form-control:-moz-input-placeholder{
+	color: red;
+}
+
+/*support internet explorer*/
+.form-control:-ms-input-placeholder{
+	color: red;
+}
