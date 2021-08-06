@@ -18,6 +18,7 @@
   </head>
   <body style="background-color: #212529; color:white" class="d-flex flex-column h-100">
     <!-- NAVBAR -->
+    <!--
     <header>
       <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <div class="container-fluid">
@@ -27,17 +28,46 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
+            <div class="navbar-nav ms-auto">
+              <a class="nav-link" href="#">Home</a>
               <a class="nav-link" href="#">Endpoints</a>
               <a class="nav-link" href="#">Pricing</a>
-            </div>
-            <div class="d-flex ms-auto">
+              <a class="nav-link" href="#">Documentation</a>
+              <a class="nav-link me-sm-2" href="#">Discord</a>
               <button type="button" class="btn btn-outline-info me-sm-3 fw-bold">Login</button>
               <button type="button" class="btn btn-outline-info fw-bold">Register</button>
             </div>
           </div>
         </div>
       </nav>
+    </header>
+    -->
+    <header class="p-3 bg-dark text-white fixed-top bg-dark navbar-expand-md">
+      <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+          <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none navbar-brand">
+            <img src="{% static 'logo.png' %}" alt="" width="40" height="32">
+          </a>
+          <button class="navbar-toggler ms-auto btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+            </svg></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+              <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
+              <li><a href="#" class="nav-link px-2 text-white">Features</a></li>
+              <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
+              <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
+              <li><a href="#" class="nav-link px-2 text-white">About</a></li>
+            </ul>
+            <div class="text-center">
+              <button type="button" class="btn btn-outline-light me-2">Login</button>
+              <button type="button" class="btn btn-info">Sign-up</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </header>
 
     {% block body %}{% endblock %}
