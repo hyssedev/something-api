@@ -20,4 +20,7 @@ from api import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='index'),
+    path('register/', views.register, name='register'),
+    path('login/', views.loginpage, name='login'),
+    path('logout/', views.logoutUser, name='logout'),
 ]
