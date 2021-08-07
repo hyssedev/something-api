@@ -44,14 +44,26 @@
           <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
               <li><a href="#" class="nav-link px-2 text-white">Home</a></li>
-              <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
-              <li><a href="#" class="nav-link px-2 text-white">Endpoints</a></li>
+              <li><a href="#pricing" class="nav-link px-2 text-white">Pricing</a></li>
+              <li><a href="#endpoints" class="nav-link px-2 text-white">Endpoints</a></li>
               <li><a href="#" class="nav-link px-2 text-white">Documentation</a></li>
               <li><a href="#" class="nav-link px-2 text-white">Discord</a></li>
             </ul>
             <div class="text-center">
-              <button type="button" class="btn btn-outline-light me-2">Login</button>
-              <button type="button" class="btn btn-info">Sign-up</button>
+              {% if not user.is_authenticated %}
+              <a href="{% url 'login' %}"><button type="button" class="btn btn-outline-light me-2">Login</button></a>
+              <a href="{% url 'register' %}"><button type="button" class="btn btn-info">Sign-up</button></a>
+              {% else %}
+              <div class="dropdown">
+                <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">{{user}}</button>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
+                  <li><a class="dropdown-item" href="#">Token</a></li>
+                  <li><a class="dropdown-item" href="#">Dashboard</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+              </div>
+              {% endif %}
             </div>
           </div>
         </div>
