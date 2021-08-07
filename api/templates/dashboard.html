@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 text-white mt-5">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom mt-5">
+      <h1 class="h2">Dashboard</h1>
+    </div>
+    <h2>Requests</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-white">Endpoint</th>
+                    <th scope="col" class="text-white">Requests</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-white">endpoint1</td>
+                    <td class="text-white">0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <h3 class="mt-5">Current load: 0%</h3>
+    <h3>Total requests: 0</h3>
+    <h3>Average requests: 0/min</h3>
+    <h3 class="mb-5">Current uptime: 0</h3>
+    <h3>Your token is: token</h3>
+</main>
+{% endblock body %}
