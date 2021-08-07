@@ -16,7 +16,7 @@ def dashboard(request):
     try:
         token = Token.objects.get(user=request.user).key
     except:
-        token = "none"
+        token = "None"
     return render(request, "dashboard.html", {"title":"Something API - Dashboard", "token":f"{token}"})
 
 # documentation
