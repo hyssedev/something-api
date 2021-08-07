@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import CreateUserForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from ratelimit.decorators import ratelimit
 
 # index
 def home(request):
@@ -18,6 +19,7 @@ def documentation(request):
     return render(request, "documentation.html")
 
 # registering user
+from ratelimit.decorators import ratelimit
 def register(request):
     form = CreateUserForm()
     if request.user.is_authenticated:
@@ -33,6 +35,7 @@ def register(request):
     return render(request, "register.html", context)
 
 # logging the user in
+@ratelimit(key="ip", rate="5/m", method=["GET", "POST"], block=True)
 def loginpage(request):
     if request.user.is_authenticated:
         return redirect("index")
