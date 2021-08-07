@@ -33,7 +33,7 @@
     <header class="p-3 bg-dark text-white fixed-top bg-dark navbar-expand-md">
       <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-          <a href="#" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none navbar-brand">
+          <a href="{% url 'index' %}" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none navbar-brand">
             <img src="{% static 'logo.png' %}" alt="" width="40" height="32">
           </a>
           <button class="navbar-toggler ms-auto btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,11 +43,11 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-              <li><a href="#" class="nav-link px-2 text-white">Home</a></li>
+              <li><a href="{% url 'index' %}" class="nav-link px-2 text-white">Home</a></li>
               <li><a href="#pricing" class="nav-link px-2 text-white">Pricing</a></li>
               <li><a href="#endpoints" class="nav-link px-2 text-white">Endpoints</a></li>
-              <li><a href="#" class="nav-link px-2 text-white">Documentation</a></li>
-              <li><a href="#" class="nav-link px-2 text-white">Discord</a></li>
+              <li><a href="{% url 'documentation' %}" class="nav-link px-2 text-white">Documentation</a></li>
+              <li><a href="https://discord.gg/McQvTVEtuY" class="nav-link px-2 text-white">Discord</a></li>
             </ul>
             <div class="text-center">
               {% if not user.is_authenticated %}
@@ -57,8 +57,8 @@
               <div class="dropdown">
                 <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">{{user}}</button>
                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
-                  <li><a class="dropdown-item" href="#">Token</a></li>
-                  <li><a class="dropdown-item" href="#">Dashboard</a></li>
+                  <!-- <li><a class="dropdown-item" href="">Token</a></li> -->
+                  <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
                 </ul>

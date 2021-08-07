@@ -31,8 +31,8 @@
     <div class="col-lg-6 mx-auto">
       <p class="fs-5 mb-4">Quickly develop your applications with the best API featuring many image manipulation endpoints.</p>
       <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-        <button type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold">Get Started</button>
-        <button type="button" class="btn btn-outline-light btn-lg px-4">Discord</button>
+        <a href="{% url 'dashboard' %}"><button type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold">Get Started</button></a>
+        <a href="https://discord.gg/McQvTVEtuY"><button type="button" class="btn btn-outline-light btn-lg px-4">Discord</button></a>
       </div>
     </div>
 </div>
@@ -101,7 +101,7 @@
     <p class="card-text">Support on Discord</p>
     <p class="card-text">Special Discord role</p>
     <!-- <a href="#" class="card-link">Purchase</a> -->
-    <button type="button" class="w-100 btn btn-lg btn-dark">Get started</button>
+    <a href="{% url 'dashboard' %}"><button type="button" class="w-100 btn btn-lg btn-dark">Get started</button></a>
   </div>
 </div>
 
