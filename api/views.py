@@ -3,6 +3,7 @@ from .forms import CreateUserForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from ratelimit.decorators import ratelimit
+from rest_framework.authtoken.models import Token
 
 # index
 def home(request):
@@ -12,7 +13,11 @@ def home(request):
 def dashboard(request):
     if not request.user.is_authenticated:
         return redirect("login")
-    return render(request, "dashboard.html", {"title":"Something API - Dashboard"})
+    try:
+        token = Token.objects.get(user=request.user).key
+    except:
+        token = "none"
+    return render(request, "dashboard.html", {"title":"Something API - Dashboard", "token":f"{token}"})
 
 # documentation
 def documentation(request):
