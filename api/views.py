@@ -7,6 +7,16 @@ from django.contrib.auth import authenticate, login, logout
 def home(request):
     return render(request, "index.html")
 
+# dashboard
+def dashboard(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
+    return render(request, "dashboard.html", {"title":"Something API - Dashboard"})
+
+# documentation
+def documentation(request):
+    return render(request, "documentation.html")
+
 # registering user
 def register(request):
     form = CreateUserForm()
