@@ -31,7 +31,7 @@ def dashboard(request):
         token = Token.objects.get(user=request.user).key
     except:
         token = "None"
-        
+
     # gotta cache these things so it won't hurt my server, but it works for now. (update values once every x minutes)
     total = sum(usage.values())
     minutes_uptime = (datetime.datetime.utcnow() - uptime).total_seconds() / 60.0
@@ -42,7 +42,7 @@ def dashboard(request):
         "triggered": usage['triggered'],
 
         "total": total,
-        "average": round(total/minutes_uptime),
+        "average": round(total/minutes_uptime, 1),
       }
     return render(request, "dashboard.html", context)
 
