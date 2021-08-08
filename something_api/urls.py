@@ -30,5 +30,5 @@ urlpatterns = [
     path('logout/', views.logoutUser, name='logout'),
 
     # endpoints
-    path('triggered', views.Triggered.as_view(), name='triggered'),
+    path('image-manipulation/triggered', views.Triggered.as_view(), name='triggered'),
 ]
