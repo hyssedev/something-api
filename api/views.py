@@ -104,6 +104,8 @@ class Triggered(generics.ListCreateAPIView):
     def get(self, request):
         try:
             # creating the filename
+            if not 'avatar' in request.GET:
+                return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
             url = request.GET.get("avatar")
             filename = url.split("/")[4]
 
@@ -122,7 +124,10 @@ class Triggered(generics.ListCreateAPIView):
             return FileResponse(file)
         finally:
             # deleting the created file after sending it
-            os.remove(f"files/{filename}_triggered.png")
+            try:
+                os.remove(f"files/{filename}_triggered.png")
+            except:
+                pass
 
     def post(self, request):
         # not allowing methods other than GET
@@ -136,6 +141,8 @@ class Blur(generics.ListCreateAPIView):
     def get(self, request):
         try:
             # creating the filename
+            if not 'avatar' in request.GET:
+                return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
             url = request.GET.get("avatar")
             filename = url.split("/")[4]
 
@@ -151,7 +158,10 @@ class Blur(generics.ListCreateAPIView):
             return FileResponse(file)
         finally:
             # deleting the created file after sending it
-            os.remove(f"files/{filename}_blur.png")
+            try:
+                os.remove(f"files/{filename}_blur.png")
+            except:
+                pass
 
     def post(self, request):
         # not allowing methods other than GET
@@ -165,6 +175,8 @@ class Pixelate(generics.ListCreateAPIView):
     def get(self, request):
         try:
             # creating the filename
+            if not 'avatar' in request.GET:
+                return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
             url = request.GET.get("avatar")
             filename = url.split("/")[4]
 
@@ -181,7 +193,10 @@ class Pixelate(generics.ListCreateAPIView):
             return FileResponse(file)
         finally:
             # deleting the created file after sending it
-            os.remove(f"files/{filename}_pixelate.png")
+            try:
+                os.remove(f"files/{filename}_pixelate.png")
+            except:
+                pass
 
     def post(self, request):
         # not allowing methods other than GET
@@ -195,6 +210,8 @@ class Flip(generics.ListCreateAPIView):
     def get(self, request):
         try:
             # creating the filename
+            if 'avatar' not in request.GET:
+                return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
             url = request.GET.get("avatar")
             filename = url.split("/")[4]
 
@@ -220,7 +237,10 @@ class Flip(generics.ListCreateAPIView):
             return FileResponse(file)
         finally:
             # deleting the created file after sending it
-            os.remove(f"files/{filename}_flip.png")
+            try:
+                os.remove(f"files/{filename}_flip.png")
+            except:
+                pass
 
     def post(self, request):
         # not allowing methods other than GET
