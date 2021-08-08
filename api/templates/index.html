@@ -120,8 +120,8 @@
           <h4 class="my-1 fw-bold">Image Manipulation</h4>
         </div>
         <div class="card-body">
-          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#endpoint1" role="button" aria-expanded="false" aria-controls="endpoint1">Triggered</a>
-          <div class="collapse" id="endpoint1">
+          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#triggered" role="button" aria-expanded="false" aria-controls="triggered">Triggered</a>
+          <div class="collapse" id="triggered">
             <div class="card card-body bg-dark">
               <p class="fw-bold">Returns a triggered version of the picture you sent as a query.<br>Method: GET<br>Queries:
               <ul>
@@ -129,6 +129,18 @@
               </ul>
               </p>
               <a href="{% url 'triggered' %}">Link</a>
+            </div>
+          </div>
+          <br>
+          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#blur" role="button" aria-expanded="false" aria-controls="blur">Blur</a>
+          <div class="collapse" id="blur">
+            <div class="card card-body bg-dark">
+              <p class="fw-bold">Returns a blurred version of the picture you sent as a query.<br>Method: GET<br>Queries:
+              <ul>
+                <li>avatar - required</li>
+              </ul>
+              </p>
+              <a href="{% url 'blur' %}">Link</a>
             </div>
           </div>
         </div>

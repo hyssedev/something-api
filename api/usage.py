@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 uptime = datetime.datetime.utcnow()
 usage = {
     "triggered": 0,
+    "blur": 0,
 }
 
 # misc for uptime

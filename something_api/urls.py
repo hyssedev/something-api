@@ -31,4 +31,5 @@ urlpatterns = [
 
     # endpoints
     path('image-manipulation/triggered', views.Triggered.as_view(), name='triggered'),
+    path('image-manipulation/blur', views.Blur.as_view(), name='blur'),
 ]
