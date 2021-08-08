@@ -17,7 +17,7 @@ from rest_framework import status
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
 from .usage import human_timedelta, uptime, usage
-import datetime
+import datetime, string, random
 
 # index
 def home(request):
@@ -96,6 +96,9 @@ def logoutUser(request):
 
 
 # API ----------------------------------
+def generate_name(size=6, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
 # image-manipulation
 class Triggered(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
@@ -107,26 +110,25 @@ class Triggered(generics.ListCreateAPIView):
             # creating the filename
             if not 'avatar' in request.GET:
                 return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
-            url = request.GET.get("avatar")
-            filename = url.split("/")[4]
+            filename = generate_name()
 
             # opening the avatar and the triggered and red pictures
             triggered = Image.open("api/utilities/triggered.png")
             red = Image.open("api/utilities/red.jpg")
-            avatar = Image.open(requests.get(url, stream=True).raw)
+            avatar = Image.open(requests.get(request.GET.get("avatar"), stream=True).raw)
 
             # pasting one on the other and saving and then sending the response, we also add the red blending
             avatar.paste(triggered, (0, 181))
             avatar = Image.blend(avatar.convert("RGBA"), red.convert("RGBA"), alpha=.4)
-            avatar.save(f'files/{filename}_triggered.png', quality=95)
-            file = open(f'files/{filename}_triggered.png', 'rb')
+            avatar.save(f'files/{filename}.png', quality=95)
+            file = open(f'files/{filename}.png', 'rb')
 
             usage['triggered'] += 1
             return FileResponse(file)
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}_triggered.png")
+                os.remove(f"files/{filename}.png")
             except:
                 pass
 
@@ -144,23 +146,22 @@ class Blur(generics.ListCreateAPIView):
             # creating the filename
             if not 'avatar' in request.GET:
                 return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
-            url = request.GET.get("avatar")
-            filename = url.split("/")[4]
+            filename = generate_name()
 
             # opening the avatar
-            avatar = Image.open(requests.get(url, stream=True).raw)
+            avatar = Image.open(requests.get(request.GET.get("avatar"), stream=True).raw)
 
             # blurring the picture
             avatar = avatar.filter(ImageFilter.GaussianBlur(2))
-            avatar.save(f'files/{filename}_blur.png', quality=95)
-            file = open(f'files/{filename}_blur.png', 'rb')
+            avatar.save(f'files/{filename}.png', quality=95)
+            file = open(f'files/{filename}.png', 'rb')
 
             usage['blur'] += 1
             return FileResponse(file)
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}_blur.png")
+                os.remove(f"files/{filename}.png")
             except:
                 pass
 
@@ -178,24 +179,23 @@ class Pixelate(generics.ListCreateAPIView):
             # creating the filename
             if not 'avatar' in request.GET:
                 return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
-            url = request.GET.get("avatar")
-            filename = url.split("/")[4]
+            filename = generate_name()
 
             # opening the avatar
-            avatar = Image.open(requests.get(url, stream=True).raw)
+            avatar = Image.open(requests.get(request.GET.get("avatar"), stream=True).raw)
 
             # resizing the image and then scaling it back, saving and sending the picture
             small_image = avatar.resize((32,32),resample=Image.BILINEAR)
             avatar = small_image.resize(avatar.size,Image.NEAREST)
-            avatar.save(f'files/{filename}_pixelate.png', quality=95)
-            file = open(f'files/{filename}_pixelate.png', 'rb')
+            avatar.save(f'files/{filename}.png', quality=95)
+            file = open(f'files/{filename}.png', 'rb')
 
             usage['pixelate'] += 1
             return FileResponse(file)
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}_pixelate.png")
+                os.remove(f"files/{filename}.png")
             except:
                 pass
 
@@ -213,11 +213,10 @@ class Flip(generics.ListCreateAPIView):
             # creating the filename
             if 'avatar' not in request.GET:
                 return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
-            url = request.GET.get("avatar")
-            filename = url.split("/")[4]
+            filename = generate_name()
 
             # opening the avatar and the triggered and red pictures
-            avatar = Image.open(requests.get(url, stream=True).raw)
+            avatar = Image.open(requests.get(request.GET.get("avatar"), stream=True).raw)
 
             # if there is no type query, we flip the image horizontally, if there is however, we check whether it is horizontal or vertical
             # if it is not vertical or horizontal, we return http code 400 bad request
@@ -231,15 +230,15 @@ class Flip(generics.ListCreateAPIView):
                     return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 avatar = avatar.transpose(Image.FLIP_LEFT_RIGHT)
-            avatar.save(f'files/{filename}_flip.png', quality=95)
-            file = open(f'files/{filename}_flip.png', 'rb')
+            avatar.save(f'files/{filename}.png', quality=95)
+            file = open(f'files/{filename}.png', 'rb')
 
             usage['flip'] += 1
             return FileResponse(file)
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}_flip.png")
+                os.remove(f"files/{filename}.png")
             except:
                 pass
 
@@ -248,8 +247,8 @@ class Flip(generics.ListCreateAPIView):
         return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 class Rotate(generics.ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
 
     def get(self, request):
@@ -257,11 +256,10 @@ class Rotate(generics.ListCreateAPIView):
             # creating the filename
             if 'avatar' not in request.GET:
                 return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
-            url = request.GET.get("avatar")
-            filename = url.split("/")[4]
+            filename = generate_name()
 
             # opening the avatar and the triggered and red pictures
-            avatar = Image.open(requests.get(url, stream=True).raw)
+            avatar = Image.open(requests.get(request.GET.get("avatar"), stream=True).raw)
 
             # if there is no type query, we rotate the image 90 degrees to the right, if there is however, we check whether it is left or right
             # if it is not left or right, we return http code 400 bad request
@@ -275,15 +273,15 @@ class Rotate(generics.ListCreateAPIView):
                     return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 avatar = avatar.rotate(90)
-            avatar.save(f'files/{filename}_rotate.png', quality=95)
-            file = open(f'files/{filename}_rotate.png', 'rb')
+            avatar.save(f'files/{filename}.png', quality=95)
+            file = open(f'files/{filename}.png', 'rb')
 
             usage['rotate'] += 1
             return FileResponse(file)
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}_rotate.png")
+                os.remove(f"files/{filename}.png")
             except:
                 pass
 
