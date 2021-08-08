@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
+from .usage import human_timedelta, uptime
 
 # index
 def home(request):
@@ -29,7 +30,7 @@ def dashboard(request):
         token = Token.objects.get(user=request.user).key
     except:
         token = "None"
-    return render(request, "dashboard.html", {"title":"Something API - Dashboard", "token":f"{token}"})
+    return render(request, "dashboard.html", {"title":"Something API - Dashboard", "token":f"{token}", "uptime": human_timedelta(uptime)})
 
 # documentation
 def documentation(request):
