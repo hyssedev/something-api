@@ -16,7 +16,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
-from .usage import human_timedelta, uptime
+from .usage import human_timedelta, uptime, usage
+import datetime
 
 # index
 def home(request):
@@ -30,7 +31,20 @@ def dashboard(request):
         token = Token.objects.get(user=request.user).key
     except:
         token = "None"
-    return render(request, "dashboard.html", {"title":"Something API - Dashboard", "token":f"{token}", "uptime": human_timedelta(uptime)})
+        
+    # gotta cache these things so it won't hurt my server, but it works for now. (update values once every x minutes)
+    total = sum(usage.values())
+    minutes_uptime = (datetime.datetime.utcnow() - uptime).total_seconds() / 60.0
+    context = {
+        "title":"Something API - Dashboard",
+        "token":f"{token}",
+        "uptime": human_timedelta(uptime),
+        "triggered": usage['triggered'],
+
+        "total": total,
+        "average": round(total/minutes_uptime),
+      }
+    return render(request, "dashboard.html", context)
 
 # documentation
 def documentation(request):
@@ -106,6 +120,8 @@ class Triggered(generics.ListCreateAPIView):
             avatar = Image.blend(avatar.convert("RGBA"), red.convert("RGBA"), alpha=.4)
             avatar.save(f'files/{filename}.png', quality=95)
             file = open(f'files/{filename}.png', 'rb')
+
+            usage['triggered'] += 1
             return FileResponse(file)
         finally:
             # deleting the created file after sending it

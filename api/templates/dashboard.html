@@ -16,15 +16,15 @@
             </thead>
             <tbody>
                 <tr>
-                    <td class="text-white">endpoint1</td>
-                    <td class="text-white">0</td>
+                    <td class="text-white">triggered</td>
+                    <td class="text-white">{{triggered}}</td>
                 </tr>
             </tbody>
         </table>
     </div>
-    <h3 class="mt-5">Current load: 0%</h3>
-    <h3>Total requests: 0</h3>
-    <h3>Average requests: 0/min</h3>
+    <h3 class="mt-5">Current load: {{average}}%</h3>
+    <h3>Total requests: {{total}}</h3>
+    <h3>Average requests: {{average}}/min</h3>
     <h3 class="mb-5">Current uptime: {{uptime}}</h3>
     <h3>Your token is: {{token}}</h3>
 </main>
