@@ -33,4 +33,5 @@ urlpatterns = [
     path('image-manipulation/triggered', views.Triggered.as_view(), name='triggered'),
     path('image-manipulation/blur', views.Blur.as_view(), name='blur'),
     path('image-manipulation/pixelate', views.Pixelate.as_view(), name='pixelate'),
+    path('image-manipulation/flip', views.Flip.as_view(), name='flip'),
 ]

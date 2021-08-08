@@ -42,6 +42,7 @@ def dashboard(request):
         "triggered": usage['triggered'],
         "blur": usage['blur'],
         "pixelate": usage['pixelate'],
+        "flip": usage['flip'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),
@@ -170,7 +171,7 @@ class Pixelate(generics.ListCreateAPIView):
             # opening the avatar and the triggered and red pictures
             avatar = Image.open(requests.get(url, stream=True).raw)
 
-            # pasting one on the other and saving and then sending the response, we also add the red blending
+            # resizing the image and then scaling it back, saving and sending the picture
             small_image = avatar.resize((32,32),resample=Image.BILINEAR)
             avatar = small_image.resize(avatar.size,Image.NEAREST)
             avatar.save(f'files/{filename}_pixelate.png', quality=95)
@@ -186,4 +187,41 @@ class Pixelate(generics.ListCreateAPIView):
         # not allowing methods other than GET
         return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+class Flip(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
 
+    def get(self, request):
+        try:
+            # creating the filename
+            url = request.GET.get("avatar")
+            filename = url.split("/")[4]
+
+            # opening the avatar and the triggered and red pictures
+            avatar = Image.open(requests.get(url, stream=True).raw)
+
+            # if there is no type query, we flip the image horizontally, if there is however, we check whether it is horizontal or vertical
+            # if it is not vertical or horizontal, we return http code 400 bad request
+            if 'type' in request.GET:
+                flip_type = request.GET.get("type")
+                if flip_type == 'horizontal':
+                    avatar = avatar.transpose(Image.FLIP_LEFT_RIGHT)
+                elif flip_type == 'vertical':
+                    avatar = avatar.transpose(Image.FLIP_TOP_BOTTOM)
+                else:
+                    return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                avatar = avatar.transpose(Image.FLIP_LEFT_RIGHT)
+            avatar.save(f'files/{filename}_flip.png', quality=95)
+            file = open(f'files/{filename}_flip.png', 'rb')
+
+            usage['flip'] += 1
+            return FileResponse(file)
+        finally:
+            # deleting the created file after sending it
+            os.remove(f"files/{filename}_flip.png")
+
+    def post(self, request):
+        # not allowing methods other than GET
+        return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
