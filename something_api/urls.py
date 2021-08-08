@@ -18,12 +18,17 @@ from django.urls import path
 from api import views
 
 urlpatterns = [
+    # front-end
     path('admin/', admin.site.urls),
     path('', views.home, name='index'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('documentation/', views.documentation, name='documentation'),
 
+    # user register login logout
     path('register/', views.register, name='register'),
     path('login/', views.loginpage, name='login'),
     path('logout/', views.logoutUser, name='logout'),
+
+    # endpoints
+    path('testing/', views.triggered, name='triggered'),
 ]

@@ -1,9 +1,19 @@
+from django.http.response import HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import render, redirect
 from .forms import CreateUserForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from ratelimit.decorators import ratelimit
 from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.http import HttpResponse
+import requests, os
+from PIL import Image
+from django.http import FileResponse
+from rest_framework.decorators import api_view
+from rest_framework import status
 
 # index
 def home(request):
@@ -61,3 +71,37 @@ def loginpage(request):
 def logoutUser(request):
     logout(request)
     return redirect("index")
+
+
+
+# API ----------------------------------
+
+@api_view(['GET'])
+def triggered(request):
+    if request.method == 'GET':
+        # checking if avatar query is present or not
+        if len(request.GET.keys()) == 0:
+            return JsonResponse({'error': 'missing avatar query'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            
+
+            # creating the filename
+            url = request.GET.get("avatar")
+            filename = url.split("/")[4]
+
+            # opening the avatar and the triggered and red pictures
+            triggered = Image.open("api/utilities/triggered.png")
+            red = Image.open("api/utilities/red.jpg")
+            avatar = Image.open(requests.get(url, stream=True).raw)
+
+            # pasting one on the other and saving and then sending the response
+            avatar.paste(triggered, (0, 181))
+            avatar = Image.blend(avatar.convert("RGBA"), red.convert("RGBA"), alpha=.4)
+            avatar.save(f'files/{filename}.png', quality=95)
+            file = open(f'files/{filename}.png', 'rb')
+            return FileResponse(file)
+        finally:
+            # deleting the created file after sending it
+            os.remove(f"files/{filename}.png")
+    else:
+        return HttpResponseNotAllowed(['GET'])
