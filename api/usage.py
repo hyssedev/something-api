@@ -7,6 +7,7 @@ usage = {
     "blur": 0,
     "pixelate": 0,
     "flip": 0,
+    "rotate": 0,
 }
 
 # misc for uptime

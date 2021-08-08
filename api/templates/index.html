@@ -168,6 +168,19 @@
               <a href="{% url 'flip' %}">Link</a>
             </div>
           </div>
+          <br>
+          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#rotate" role="button" aria-expanded="false" aria-controls="rotate">Rotate</a>
+          <div class="collapse" id="flip">
+            <div class="card card-body bg-dark">
+              <p class="fw-bold">Returns a rotated version of the picture you sent as a query.<br>Method: GET<br>Queries:
+              <ul>
+                <li>avatar - required</li>
+                <li>type - optional (can be either left or right) defaults to right</li>
+              </ul>
+              </p>
+              <a href="{% url 'rotate' %}">Link</a>
+            </div>
+          </div>
 
         </div>
       </div>

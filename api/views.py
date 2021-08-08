@@ -43,6 +43,7 @@ def dashboard(request):
         "blur": usage['blur'],
         "pixelate": usage['pixelate'],
         "flip": usage['flip'],
+        "rotate": usage['rotate'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),
@@ -146,10 +147,10 @@ class Blur(generics.ListCreateAPIView):
             url = request.GET.get("avatar")
             filename = url.split("/")[4]
 
-            # opening the avatar and the triggered and red pictures
+            # opening the avatar
             avatar = Image.open(requests.get(url, stream=True).raw)
 
-            # pasting one on the other and saving and then sending the response, we also add the red blending
+            # blurring the picture
             avatar = avatar.filter(ImageFilter.GaussianBlur(2))
             avatar.save(f'files/{filename}_blur.png', quality=95)
             file = open(f'files/{filename}_blur.png', 'rb')
@@ -180,7 +181,7 @@ class Pixelate(generics.ListCreateAPIView):
             url = request.GET.get("avatar")
             filename = url.split("/")[4]
 
-            # opening the avatar and the triggered and red pictures
+            # opening the avatar
             avatar = Image.open(requests.get(url, stream=True).raw)
 
             # resizing the image and then scaling it back, saving and sending the picture
@@ -239,6 +240,50 @@ class Flip(generics.ListCreateAPIView):
             # deleting the created file after sending it
             try:
                 os.remove(f"files/{filename}_flip.png")
+            except:
+                pass
+
+    def post(self, request):
+        # not allowing methods other than GET
+        return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class Rotate(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request):
+        try:
+            # creating the filename
+            if 'avatar' not in request.GET:
+                return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
+            url = request.GET.get("avatar")
+            filename = url.split("/")[4]
+
+            # opening the avatar and the triggered and red pictures
+            avatar = Image.open(requests.get(url, stream=True).raw)
+
+            # if there is no type query, we rotate the image 90 degrees to the right, if there is however, we check whether it is left or right
+            # if it is not left or right, we return http code 400 bad request
+            if 'type' in request.GET:
+                rotate_type = request.GET.get("type")
+                if rotate_type == 'left':
+                    avatar = avatar.rotate(-90)
+                elif rotate_type == 'right':
+                    avatar = avatar.rotate(90)
+                else:
+                    return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                avatar = avatar.rotate(90)
+            avatar.save(f'files/{filename}_rotate.png', quality=95)
+            file = open(f'files/{filename}_rotate.png', 'rb')
+
+            usage['rotate'] += 1
+            return FileResponse(file)
+        finally:
+            # deleting the created file after sending it
+            try:
+                os.remove(f"files/{filename}_rotate.png")
             except:
                 pass
 
