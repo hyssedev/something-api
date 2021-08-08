@@ -41,6 +41,7 @@ def dashboard(request):
         "uptime": human_timedelta(uptime),
         "triggered": usage['triggered'],
         "blur": usage['blur'],
+        "pixelate": usage['pixelate'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),
@@ -154,3 +155,35 @@ class Blur(generics.ListCreateAPIView):
     def post(self, request):
         # not allowing methods other than GET
         return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class Pixelate(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request):
+        try:
+            # creating the filename
+            url = request.GET.get("avatar")
+            filename = url.split("/")[4]
+
+            # opening the avatar and the triggered and red pictures
+            avatar = Image.open(requests.get(url, stream=True).raw)
+
+            # pasting one on the other and saving and then sending the response, we also add the red blending
+            small_image = avatar.resize((32,32),resample=Image.BILINEAR)
+            avatar = small_image.resize(avatar.size,Image.NEAREST)
+            avatar.save(f'files/{filename}_pixelate.png', quality=95)
+            file = open(f'files/{filename}_pixelate.png', 'rb')
+
+            usage['pixelate'] += 1
+            return FileResponse(file)
+        finally:
+            # deleting the created file after sending it
+            os.remove(f"files/{filename}_pixelate.png")
+
+    def post(self, request):
+        # not allowing methods other than GET
+        return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+

@@ -5,6 +5,7 @@ uptime = datetime.datetime.utcnow()
 usage = {
     "triggered": 0,
     "blur": 0,
+    "pixelate": 0,
 }
 
 # misc for uptime

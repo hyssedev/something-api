@@ -143,6 +143,18 @@
               <a href="{% url 'blur' %}">Link</a>
             </div>
           </div>
+          <br>
+          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#pixelate" role="button" aria-expanded="false" aria-controls="pixelate">Pixelate</a>
+          <div class="collapse" id="pixelate">
+            <div class="card card-body bg-dark">
+              <p class="fw-bold">Returns a pixelated version of the picture you sent as a query.<br>Method: GET<br>Queries:
+              <ul>
+                <li>avatar - required</li>
+              </ul>
+              </p>
+              <a href="{% url 'pixelate' %}">Link</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
