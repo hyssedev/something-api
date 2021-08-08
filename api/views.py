@@ -12,8 +12,10 @@ from django.http import HttpResponse
 import requests, os
 from PIL import Image
 from django.http import FileResponse
-from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework import generics
+from rest_framework.renderers import JSONRenderer
 
 # index
 def home(request):
@@ -76,12 +78,18 @@ def logoutUser(request):
 
 # API ----------------------------------
 
-@api_view(['GET'])
-def triggered(request):
-    if request.method == 'GET':
-        # checking if avatar query is present or not
-        if len(request.GET.keys()) == 0:
-            return JsonResponse({'error': 'missing avatar query'}, status=status.HTTP_400_BAD_REQUEST)
+class Triggered(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request):
+        """
+        if request.method == 'GET':
+            # checking if avatar query is present or not
+            if len(request.GET.keys()) == 0:
+                return JsonResponse({'error': 'missing avatar query'}, status=status.HTTP_400_BAD_REQUEST)
+            """
         try:
             # creating the filename
             url = request.GET.get("avatar")
@@ -101,6 +109,7 @@ def triggered(request):
         finally:
             # deleting the created file after sending it
             os.remove(f"files/{filename}.png")
-    else:
+
+    def post(self, request):
         # not allowing methods other than GET
-        return HttpResponseNotAllowed(['GET'])
+        return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
