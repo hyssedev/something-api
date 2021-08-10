@@ -109,10 +109,6 @@ class Triggered(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
 
-    # this does not work because I need to resize every image to 255x255 prefferably
-    # current error: ValueError: images do not match
-    # TOFIX
-
     def get(self, request):
         try:
             # checking if the image query is supplied
@@ -133,6 +129,8 @@ class Triggered(generics.ListCreateAPIView):
             red = Image.open("api/utilities/red.jpg")
 
             # pasting one on the other and saving and then sending the response, we also add the red blending
+            image = image.convert("RGB")
+            image = image.resize(red.size)
             image.paste(triggered, (0, 181))
             image = Image.blend(image.convert("RGBA"), red.convert("RGBA"), alpha=.4)
             image.save(f'files/{filename}.png', quality=95)
