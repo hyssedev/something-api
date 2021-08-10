@@ -125,10 +125,9 @@ class Triggered(generics.ListCreateAPIView):
             image.paste(triggered, (0, 181))
             image = Image.blend(image.convert("RGBA"), red.convert("RGBA"), alpha=.4)
             image.save(f'files/{filename}.png', quality=95)
-            file = open(f'files/{filename}.png', 'rb')
 
             usage['triggered'] += 1
-            return FileResponse(file)
+            return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
@@ -158,10 +157,9 @@ class Blur(generics.ListCreateAPIView):
             # blurring the picture
             image = image.filter(ImageFilter.GaussianBlur(2))
             image.save(f'files/{filename}.png', quality=95)
-            file = open(f'files/{filename}.png', 'rb')
 
             usage['blur'] += 1
-            return FileResponse(file)
+            return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
@@ -192,10 +190,9 @@ class Pixelate(generics.ListCreateAPIView):
             small_image = image.resize((32,32),resample=Image.BILINEAR)
             image = small_image.resize(image.size,Image.NEAREST)
             image.save(f'files/{filename}.png', quality=95)
-            file = open(f'files/{filename}.png', 'rb')
 
             usage['pixelate'] += 1
-            return FileResponse(file)
+            return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
@@ -217,10 +214,15 @@ class Flip(generics.ListCreateAPIView):
             # creating the filename
             if 'image' not in request.GET:
                 return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
-            filename = generate_name()
+            url = request.GET.get("image")
 
-            # opening the image and the triggered and red pictures
-            image = Image.open(requests.get(request.GET.get("image"), stream=True).raw)
+            # checking content type
+            content_type = str(requests.head(url, allow_redirects=True).headers.get('content-type'))
+            if content_type not in accepted_content_types: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # generating file name and opening the image
+            filename = generate_name()
+            image = Image.open(requests.get(url, stream=True).raw)
 
             # if there is no type query, we flip the image horizontally, if there is however, we check whether it is horizontal or vertical
             # if it is not vertical or horizontal, we return http code 400 bad request
@@ -235,10 +237,8 @@ class Flip(generics.ListCreateAPIView):
             else:
                 image = image.transpose(Image.FLIP_LEFT_RIGHT)
             image.save(f'files/{filename}.png', quality=95)
-            file = open(f'files/{filename}.png', 'rb')
-
             usage['flip'] += 1
-            return FileResponse(file)
+            return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
