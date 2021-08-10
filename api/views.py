@@ -109,17 +109,28 @@ class Triggered(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
 
+    # this does not work because I need to resize every image to 255x255 prefferably
+    # current error: ValueError: images do not match
+    # TOFIX
+
     def get(self, request):
         try:
-            # creating the filename
-            if not 'image' in request.GET:
+            # checking if the image query is supplied
+            if 'image' not in request.GET:
                 return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
-            filename = generate_name()
+            url = request.GET.get("image")
 
-            # opening the image and the triggered and red pictures
+            # checking content type
+            content_type = str(requests.head(url, allow_redirects=True).headers.get('content-type'))
+            if content_type not in accepted_content_types: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # generating file name and opening the image
+            filename = generate_name()
+            image = Image.open(requests.get(url, stream=True).raw)
+
+            # opening  the triggered and red pictures
             triggered = Image.open("api/utilities/triggered.png")
             red = Image.open("api/utilities/red.jpg")
-            image = Image.open(requests.get(request.GET.get("image"), stream=True).raw)
 
             # pasting one on the other and saving and then sending the response, we also add the red blending
             image.paste(triggered, (0, 181))
