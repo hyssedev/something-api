@@ -48,6 +48,7 @@ def dashboard(request):
         "pixelate": usage['pixelate'],
         "flip": usage['flip'],
         "rotate": usage['rotate'],
+        "grayscale": usage['grayscale'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),
@@ -303,6 +304,43 @@ class Rotate(generics.ListCreateAPIView):
                 image = (image.rotate(90)).convert('RGB')
             image.save(f'files/{filename}.png', quality=95)
             usage['rotate'] += 1
+            return FileResponse(open(f'files/{filename}.png', 'rb'))
+        finally:
+            # deleting the created file after sending it
+            try:
+                os.remove(f"files/{filename}.png")
+            except:
+                pass
+
+    def post(self, request):
+        # not allowing methods other than GET
+        return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class Grayscale(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request):
+        try:
+            # checking if the image query is supplied
+            if 'image' not in request.GET:
+                return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
+            url = request.GET.get("image")
+
+            # checking content type
+            content_type = str(requests.head(url, allow_redirects=True).headers.get('content-type'))
+            if content_type not in accepted_content_types: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # generating file name and opening the image
+            filename = generate_name()
+            image = Image.open(requests.get(url, stream=True).raw)
+            image = image.resize((255, 255))
+            # blurring the picture
+            image = image.convert('L')
+            image.save(f'files/{filename}.png', quality=95)
+
+            usage['grayscale'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
