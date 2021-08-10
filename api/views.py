@@ -146,16 +146,21 @@ class Blur(generics.ListCreateAPIView):
 
     def get(self, request):
         try:
-            # creating the filename
-            if not 'image' in request.GET:
+            # checking if the image query is supplied
+            if 'image' not in request.GET:
                 return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
-            filename = generate_name()
+            url = request.GET.get("image")
 
-            # opening the image
-            image = Image.open(requests.get(request.GET.get("image"), stream=True).raw)
+            # checking content type
+            content_type = str(requests.head(url, allow_redirects=True).headers.get('content-type'))
+            if content_type not in accepted_content_types: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # generating file name and opening the image
+            filename = generate_name()
+            image = Image.open(requests.get(url, stream=True).raw)
 
             # blurring the picture
-            image = image.filter(ImageFilter.GaussianBlur(2))
+            image = (image.convert('RGB')).filter(ImageFilter.GaussianBlur(2))
             image.save(f'files/{filename}.png', quality=95)
 
             usage['blur'] += 1
