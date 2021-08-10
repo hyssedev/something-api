@@ -1,3 +1,4 @@
+from typing import ByteString
 from django.http.response import HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import render, redirect
 from .forms import CreateUserForm
@@ -17,7 +18,10 @@ from rest_framework import status
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
 from .usage import human_timedelta, uptime, usage
-import datetime, string, random
+import datetime, string, random, urllib
+from io import StringIO, BytesIO
+
+accepted_content_types = ['image/jpeg', 'image/png', 'image/gif']
 
 # index
 def home(request):
@@ -108,19 +112,19 @@ class Triggered(generics.ListCreateAPIView):
     def get(self, request):
         try:
             # creating the filename
-            if not 'avatar' in request.GET:
-                return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
+            if not 'image' in request.GET:
+                return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
             filename = generate_name()
 
-            # opening the avatar and the triggered and red pictures
+            # opening the image and the triggered and red pictures
             triggered = Image.open("api/utilities/triggered.png")
             red = Image.open("api/utilities/red.jpg")
-            avatar = Image.open(requests.get(request.GET.get("avatar"), stream=True).raw)
+            image = Image.open(requests.get(request.GET.get("image"), stream=True).raw)
 
             # pasting one on the other and saving and then sending the response, we also add the red blending
-            avatar.paste(triggered, (0, 181))
-            avatar = Image.blend(avatar.convert("RGBA"), red.convert("RGBA"), alpha=.4)
-            avatar.save(f'files/{filename}.png', quality=95)
+            image.paste(triggered, (0, 181))
+            image = Image.blend(image.convert("RGBA"), red.convert("RGBA"), alpha=.4)
+            image.save(f'files/{filename}.png', quality=95)
             file = open(f'files/{filename}.png', 'rb')
 
             usage['triggered'] += 1
@@ -144,16 +148,16 @@ class Blur(generics.ListCreateAPIView):
     def get(self, request):
         try:
             # creating the filename
-            if not 'avatar' in request.GET:
-                return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
+            if not 'image' in request.GET:
+                return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
             filename = generate_name()
 
-            # opening the avatar
-            avatar = Image.open(requests.get(request.GET.get("avatar"), stream=True).raw)
+            # opening the image
+            image = Image.open(requests.get(request.GET.get("image"), stream=True).raw)
 
             # blurring the picture
-            avatar = avatar.filter(ImageFilter.GaussianBlur(2))
-            avatar.save(f'files/{filename}.png', quality=95)
+            image = image.filter(ImageFilter.GaussianBlur(2))
+            image.save(f'files/{filename}.png', quality=95)
             file = open(f'files/{filename}.png', 'rb')
 
             usage['blur'] += 1
@@ -177,17 +181,17 @@ class Pixelate(generics.ListCreateAPIView):
     def get(self, request):
         try:
             # creating the filename
-            if not 'avatar' in request.GET:
-                return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
+            if not 'image' in request.GET:
+                return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
             filename = generate_name()
 
-            # opening the avatar
-            avatar = Image.open(requests.get(request.GET.get("avatar"), stream=True).raw)
+            # opening the image
+            image = Image.open(requests.get(request.GET.get("image"), stream=True).raw)
 
             # resizing the image and then scaling it back, saving and sending the picture
-            small_image = avatar.resize((32,32),resample=Image.BILINEAR)
-            avatar = small_image.resize(avatar.size,Image.NEAREST)
-            avatar.save(f'files/{filename}.png', quality=95)
+            small_image = image.resize((32,32),resample=Image.BILINEAR)
+            image = small_image.resize(image.size,Image.NEAREST)
+            image.save(f'files/{filename}.png', quality=95)
             file = open(f'files/{filename}.png', 'rb')
 
             usage['pixelate'] += 1
@@ -211,26 +215,26 @@ class Flip(generics.ListCreateAPIView):
     def get(self, request):
         try:
             # creating the filename
-            if 'avatar' not in request.GET:
-                return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
+            if 'image' not in request.GET:
+                return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
             filename = generate_name()
 
-            # opening the avatar and the triggered and red pictures
-            avatar = Image.open(requests.get(request.GET.get("avatar"), stream=True).raw)
+            # opening the image and the triggered and red pictures
+            image = Image.open(requests.get(request.GET.get("image"), stream=True).raw)
 
             # if there is no type query, we flip the image horizontally, if there is however, we check whether it is horizontal or vertical
             # if it is not vertical or horizontal, we return http code 400 bad request
             if 'type' in request.GET:
                 flip_type = request.GET.get("type")
                 if flip_type == 'horizontal':
-                    avatar = avatar.transpose(Image.FLIP_LEFT_RIGHT)
+                    image = image.transpose(Image.FLIP_LEFT_RIGHT)
                 elif flip_type == 'vertical':
-                    avatar = avatar.transpose(Image.FLIP_TOP_BOTTOM)
+                    image = image.transpose(Image.FLIP_TOP_BOTTOM)
                 else:
                     return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                avatar = avatar.transpose(Image.FLIP_LEFT_RIGHT)
-            avatar.save(f'files/{filename}.png', quality=95)
+                image = image.transpose(Image.FLIP_LEFT_RIGHT)
+            image.save(f'files/{filename}.png', quality=95)
             file = open(f'files/{filename}.png', 'rb')
 
             usage['flip'] += 1
@@ -247,37 +251,40 @@ class Flip(generics.ListCreateAPIView):
         return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 class Rotate(generics.ListCreateAPIView):
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
 
     def get(self, request):
         try:
-            # creating the filename
-            if 'avatar' not in request.GET:
-                return JsonResponse({"detail":"missing avatar query."}, status=status.HTTP_400_BAD_REQUEST)
-            filename = generate_name()
+            # checking if the image query is supplied
+            if 'image' not in request.GET:
+                return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
+            url = request.GET.get("image")
 
-            # opening the avatar and the triggered and red pictures
-            avatar = Image.open(requests.get(request.GET.get("avatar"), stream=True).raw)
+            # checking content type
+            content_type = str(requests.head(url, allow_redirects=True).headers.get('content-type'))
+            if content_type not in accepted_content_types: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # generating file name and opening the image
+            filename = generate_name()
+            image = Image.open(requests.get(url, stream=True).raw)
 
             # if there is no type query, we rotate the image 90 degrees to the right, if there is however, we check whether it is left or right
             # if it is not left or right, we return http code 400 bad request
             if 'type' in request.GET:
                 rotate_type = request.GET.get("type")
                 if rotate_type == 'left':
-                    avatar = avatar.rotate(-90)
+                    image = (image.rotate(-90)).convert('RGB')
                 elif rotate_type == 'right':
-                    avatar = avatar.rotate(90)
+                    image = (image.rotate(90)).convert('RGB')
                 else:
                     return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                avatar = avatar.rotate(90)
-            avatar.save(f'files/{filename}.png', quality=95)
-            file = open(f'files/{filename}.png', 'rb')
-
+                image = (image.rotate(90)).convert('RGB')
+            image.save(f'files/{filename}.png', quality=95)
             usage['rotate'] += 1
-            return FileResponse(file)
+            return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
