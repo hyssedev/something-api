@@ -9,6 +9,7 @@ usage = {
     "flip": 0,
     "rotate": 0,
     "grayscale": 0,
+    "blend": 0,
 }
 
 # misc for uptime

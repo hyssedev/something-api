@@ -193,6 +193,19 @@
               <a href="{% url 'grayscale' %}">Link</a>
             </div>
           </div>
+          <br>
+          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#blend" role="button" aria-expanded="false" aria-controls="blend">blend</a>
+          <div class="collapse" id="blend">
+            <div class="card card-body bg-dark">
+              <p class="fw-bold">Returns a blended version of the pictures you sent as a query.<br>Method: GET<br>Queries:
+              <ul>
+                <li>image - required</li>
+                <li>image2 - required</li>
+              </ul>
+              </p>
+              <a href="{% url 'blend' %}">Link</a>
+            </div>
+          </div>
 
         </div>
       </div>
