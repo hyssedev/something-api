@@ -178,13 +178,18 @@ class Pixelate(generics.ListCreateAPIView):
 
     def get(self, request):
         try:
-            # creating the filename
-            if not 'image' in request.GET:
+            # checking if the image query is supplied
+            if 'image' not in request.GET:
                 return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
-            filename = generate_name()
+            url = request.GET.get("image")
 
-            # opening the image
-            image = Image.open(requests.get(request.GET.get("image"), stream=True).raw)
+            # checking content type
+            content_type = str(requests.head(url, allow_redirects=True).headers.get('content-type'))
+            if content_type not in accepted_content_types: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # generating file name and opening the image
+            filename = generate_name()
+            image = Image.open(requests.get(url, stream=True).raw)
 
             # resizing the image and then scaling it back, saving and sending the picture
             small_image = image.resize((32,32),resample=Image.BILINEAR)
@@ -211,7 +216,7 @@ class Flip(generics.ListCreateAPIView):
 
     def get(self, request):
         try:
-            # creating the filename
+            # checking if the image query is supplied
             if 'image' not in request.GET:
                 return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
             url = request.GET.get("image")
