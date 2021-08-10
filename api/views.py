@@ -124,20 +124,14 @@ class Triggered(generics.ListCreateAPIView):
             # checking content type
             if check_content_type(url) not in accepted_content_types: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # generating file name and opening the image
-            filename = generate_name()
-            image = Image.open(requests.get(url, stream=True).raw)
-
-            # opening  the triggered and red pictures
-            triggered = Image.open("api/utilities/triggered.png")
-            red = Image.open("api/utilities/red.jpg")
-
-            # pasting one on the other and saving and then sending the response, we also add the red blending
-            image = image.resize(red.size)
-            image = image.convert("RGB")
-            image.paste(triggered, (0, 181))
-            image = Image.blend(image.convert("RGBA"), red.convert("RGBA"), alpha=.4)
-            image.save(f'files/{filename}.png', quality=95)
+            # doing all the stuff
+            with Image.open(requests.get(url, stream=True).raw) as image, Image.open("api/utilities/triggered.png") as triggered, Image.open("api/utilities/red.jpg") as red:
+                filename = generate_name()
+                image = image.resize(red.size)
+                image = image.convert("RGB")
+                image.paste(triggered, (0, 181))
+                image = Image.blend(image.convert("RGBA"), red.convert("RGBA"), alpha=.4)
+                image.save(f'files/{filename}.png', quality=95)
 
             usage['triggered'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
@@ -167,13 +161,12 @@ class Blur(generics.ListCreateAPIView):
             # checking content type
             if check_content_type(url) not in accepted_content_types: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # generating file name and opening the image
-            filename = generate_name()
-            image = Image.open(requests.get(url, stream=True).raw)
-            image = image.resize((255, 255))
             # blurring the picture
-            image = (image.convert('RGB')).filter(ImageFilter.GaussianBlur(2))
-            image.save(f'files/{filename}.png', quality=95)
+            with Image.open(requests.get(url, stream=True).raw) as image:
+                filename = generate_name()
+                image = image.resize((255, 255))
+                image = (image.convert('RGB')).filter(ImageFilter.GaussianBlur(2))
+                image.save(f'files/{filename}.png', quality=95)
 
             usage['blur'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
@@ -203,14 +196,13 @@ class Pixelate(generics.ListCreateAPIView):
             # checking content type
             if check_content_type(url) not in accepted_content_types: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # generating file name and opening the image
-            filename = generate_name()
-            image = Image.open(requests.get(url, stream=True).raw)
-            image = image.resize((255, 255))
             # resizing the image and then scaling it back, saving and sending the picture
-            small_image = image.resize((32,32),resample=Image.BILINEAR)
-            image = small_image.resize(image.size,Image.NEAREST)
-            image.save(f'files/{filename}.png', quality=95)
+            with Image.open(requests.get(url, stream=True).raw) as image:
+                filename = generate_name()
+                image = image.resize((255, 255))
+                small_image = image.resize((32,32),resample=Image.BILINEAR)
+                image = small_image.resize(image.size,Image.NEAREST)
+                image.save(f'files/{filename}.png', quality=95)
 
             usage['pixelate'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
@@ -240,23 +232,24 @@ class Flip(generics.ListCreateAPIView):
             # checking content type
             if check_content_type(url) not in accepted_content_types: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # generating file name and opening the image
-            filename = generate_name()
-            image = Image.open(requests.get(url, stream=True).raw)
-            image = image.resize((255, 255))
+            # doing all the necessary stuff
             # if there is no type query, we flip the image horizontally, if there is however, we check whether it is horizontal or vertical
             # if it is not vertical or horizontal, we return http code 400 bad request
-            if 'type' in request.GET:
-                flip_type = request.GET.get("type")
-                if flip_type == 'horizontal':
-                    image = image.transpose(Image.FLIP_LEFT_RIGHT)
-                elif flip_type == 'vertical':
-                    image = image.transpose(Image.FLIP_TOP_BOTTOM)
+            with Image.open(requests.get(url, stream=True).raw) as image:
+                filename = generate_name()
+                image = image.resize((255, 255))
+                if 'type' in request.GET:
+                    flip_type = request.GET.get("type")
+                    if flip_type == 'horizontal':
+                        image = image.transpose(Image.FLIP_LEFT_RIGHT)
+                    elif flip_type == 'vertical':
+                        image = image.transpose(Image.FLIP_TOP_BOTTOM)
+                    else:
+                        return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                image = image.transpose(Image.FLIP_LEFT_RIGHT)
-            image.save(f'files/{filename}.png', quality=95)
+                    image = image.transpose(Image.FLIP_LEFT_RIGHT)
+                image.save(f'files/{filename}.png', quality=95)
+
             usage['flip'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
@@ -285,23 +278,24 @@ class Rotate(generics.ListCreateAPIView):
             # checking content type
             if check_content_type(url) not in accepted_content_types: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # generating file name and opening the image
-            filename = generate_name()
-            image = Image.open(requests.get(url, stream=True).raw)
-            image = image.resize((255, 255))
+            # doing all the rotating stuff
             # if there is no type query, we rotate the image 90 degrees to the right, if there is however, we check whether it is left or right
             # if it is not left or right, we return http code 400 bad request
-            if 'type' in request.GET:
-                rotate_type = request.GET.get("type")
-                if rotate_type == 'left':
-                    image = (image.rotate(-90)).convert('RGB')
-                elif rotate_type == 'right':
-                    image = (image.rotate(90)).convert('RGB')
+            with Image.open(requests.get(url, stream=True).raw) as image:
+                filename = generate_name()
+                image = image.resize((255, 255))
+                if 'type' in request.GET:
+                    rotate_type = request.GET.get("type")
+                    if rotate_type == 'left':
+                        image = (image.rotate(-90)).convert('RGB')
+                    elif rotate_type == 'right':
+                        image = (image.rotate(90)).convert('RGB')
+                    else:
+                        return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                image = (image.rotate(90)).convert('RGB')
-            image.save(f'files/{filename}.png', quality=95)
+                    image = (image.rotate(90)).convert('RGB')
+                image.save(f'files/{filename}.png', quality=95)
+            
             usage['rotate'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
@@ -330,13 +324,11 @@ class Grayscale(generics.ListCreateAPIView):
             # checking content type
             if check_content_type(url) not in accepted_content_types: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # generating file name and opening the image
-            filename = generate_name()
-            image = Image.open(requests.get(url, stream=True).raw)
-            image = image.resize((255, 255))
-            # grayscaling the picture
-            image = image.convert('L')
-            image.save(f'files/{filename}.png', quality=95)
+            # doing all the stuff
+            with Image.open(requests.get(url, stream=True).raw) as image:
+                filename = generate_name()
+                image = (image.resize((255, 255))).convert('L')
+                image.save(f'files/{filename}.png', quality=95)
 
             usage['grayscale'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
