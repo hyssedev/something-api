@@ -129,8 +129,8 @@ class Triggered(generics.ListCreateAPIView):
             red = Image.open("api/utilities/red.jpg")
 
             # pasting one on the other and saving and then sending the response, we also add the red blending
-            image = image.convert("RGB")
             image = image.resize(red.size)
+            image = image.convert("RGB")
             image.paste(triggered, (0, 181))
             image = Image.blend(image.convert("RGBA"), red.convert("RGBA"), alpha=.4)
             image.save(f'files/{filename}.png', quality=95)
@@ -167,7 +167,7 @@ class Blur(generics.ListCreateAPIView):
             # generating file name and opening the image
             filename = generate_name()
             image = Image.open(requests.get(url, stream=True).raw)
-
+            image = image.resize((255, 255))
             # blurring the picture
             image = (image.convert('RGB')).filter(ImageFilter.GaussianBlur(2))
             image.save(f'files/{filename}.png', quality=95)
@@ -204,7 +204,7 @@ class Pixelate(generics.ListCreateAPIView):
             # generating file name and opening the image
             filename = generate_name()
             image = Image.open(requests.get(url, stream=True).raw)
-
+            image = image.resize((255, 255))
             # resizing the image and then scaling it back, saving and sending the picture
             small_image = image.resize((32,32),resample=Image.BILINEAR)
             image = small_image.resize(image.size,Image.NEAREST)
@@ -242,7 +242,7 @@ class Flip(generics.ListCreateAPIView):
             # generating file name and opening the image
             filename = generate_name()
             image = Image.open(requests.get(url, stream=True).raw)
-
+            image = image.resize((255, 255))
             # if there is no type query, we flip the image horizontally, if there is however, we check whether it is horizontal or vertical
             # if it is not vertical or horizontal, we return http code 400 bad request
             if 'type' in request.GET:
@@ -288,7 +288,7 @@ class Rotate(generics.ListCreateAPIView):
             # generating file name and opening the image
             filename = generate_name()
             image = Image.open(requests.get(url, stream=True).raw)
-
+            image = image.resize((255, 255))
             # if there is no type query, we rotate the image 90 degrees to the right, if there is however, we check whether it is left or right
             # if it is not left or right, we return http code 400 bad request
             if 'type' in request.GET:
