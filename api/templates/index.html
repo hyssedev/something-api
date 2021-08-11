@@ -194,7 +194,7 @@
             </div>
           </div>
           <br>
-          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#blend" role="button" aria-expanded="false" aria-controls="blend">blend</a>
+          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#blend" role="button" aria-expanded="false" aria-controls="blend">Blend</a>
           <div class="collapse" id="blend">
             <div class="card card-body bg-dark">
               <p class="fw-bold">Returns a blended version of the pictures you sent as a query.<br>Method: GET<br>Queries:
@@ -204,6 +204,20 @@
               </ul>
               </p>
               <a href="{% url 'blend' %}">Link</a>
+            </div>
+          </div>
+          <br>
+          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#enhance" role="button" aria-expanded="false" aria-controls="enhance">Enhance</a>
+          <div class="collapse" id="enhance">
+            <div class="card card-body bg-dark">
+              <p class="fw-bold">Returns an enhanced version of the pictures you sent as a query.<br>Method: GET<br>Queries:
+              <ul>
+                <li>image - required</li>
+                <li>type - required (contrast/color/brightness/sharpness)</li>
+                <li>value - required</li>
+              </ul>
+              </p>
+              <a href="{% url 'enhance' %}">Link</a>
             </div>
           </div>
 

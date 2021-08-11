@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.http import HttpResponse
 import requests, os
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageEnhance
 from django.http import FileResponse
 from rest_framework.views import APIView
 from rest_framework import status
@@ -50,6 +50,7 @@ def dashboard(request):
         "rotate": usage['rotate'],
         "grayscale": usage['grayscale'],
         "blend": usage['blend'],
+        "enhance": usage['enhance'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),
@@ -371,6 +372,49 @@ class Blend(generics.ListCreateAPIView):
                 final.save(f'files/{filename}.png', quality=95)
 
             usage['blend'] += 1
+            return FileResponse(open(f'files/{filename}.png', 'rb'))
+        finally:
+            # deleting the created file after sending it
+            try:
+                os.remove(f"files/{filename}.png")
+            except:
+                pass
+
+    def post(self, request):
+        # not allowing methods other than GET
+        return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class Enhance(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request):
+        try:
+            # checking if the image query is supplied
+            if 'image' not in request.GET: return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
+            elif 'type' not in request.GET: return JsonResponse({"detail":"missing type query."}, status=status.HTTP_400_BAD_REQUEST)
+            elif 'value' not in request.GET: return JsonResponse({"detail":"missing value query."}, status=status.HTTP_400_BAD_REQUEST)
+            url = request.GET.get("image")
+            try: value = float(request.GET.get("value"))
+            except: return JsonResponse({"detail":"value query of incorrect type."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # checking content type
+            if check_content_type(url) not in accepted_content_types: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # doing all the stuff
+            with Image.open(requests.get(url, stream=True).raw) as image:
+                filename = generate_name()
+                image = image.resize((255, 255))
+                enhance_type = request.GET.get("type")
+                if enhance_type == 'contrast': image = ImageEnhance.Contrast(image).enhance(value)
+                elif enhance_type == 'color': image = ImageEnhance.Color(image).enhance(value)
+                elif enhance_type == 'brightness': image = ImageEnhance.Brightness(image).enhance(value)
+                elif enhance_type == 'sharpness': image = ImageEnhance.Sharpness(image).enhance(value)
+                else: return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
+                image.save(f'files/{filename}.png', quality=95)
+
+            usage['enhance'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it

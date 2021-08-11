@@ -37,4 +37,5 @@ urlpatterns = [
     path('image-manipulation/rotate', views.Rotate.as_view(), name='rotate'),
     path('image-manipulation/grayscale', views.Grayscale.as_view(), name='grayscale'),
     path('image-manipulation/blend', views.Blend.as_view(), name='blend'),
+    path('image-manipulation/enhance', views.Enhance.as_view(), name='enhance'),
 ]
