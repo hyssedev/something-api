@@ -19,6 +19,7 @@ usage = {
     "sepia": 0,
     "colorfilter": 0,
     "gay": 0,
+    "urss": 0,
 }
 
 # misc for uptime

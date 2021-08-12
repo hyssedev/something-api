@@ -47,4 +47,5 @@ urlpatterns = [
     path('image-manipulation/sepia', views_api.Sepia.as_view(), name='sepia'),
     path('image-manipulation/colorfilter', views_api.ColorFilter.as_view(), name='colorfilter'),
     path('image-manipulation/gay', views_api.Gay.as_view(), name='gay'),
+    path('image-manipulation/urss', views_api.Urss.as_view(), name='urss'),
 ]

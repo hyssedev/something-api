@@ -59,6 +59,7 @@ def dashboard(request):
         "sepia": usage['sepia'],
         "colorfilter": usage['colorfilter'],
         "gay": usage['gay'],
+        "urss": usage['urss'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),
