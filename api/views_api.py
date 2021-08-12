@@ -875,7 +875,7 @@ class Wasted(generics.ListCreateAPIView):
                 image.paste(wasted, (0,0), wasted.convert("RGBA"))
                 save_image(image, f'files/{filename}.png')
 
-            usage['wanted'] += 1
+            usage['wasted'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
