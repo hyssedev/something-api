@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from api import views
+from api import views_api
 
 urlpatterns = [
     # front-end
@@ -30,12 +31,12 @@ urlpatterns = [
     path('logout/', views.logoutUser, name='logout'),
 
     # endpoints
-    path('image-manipulation/triggered', views.Triggered.as_view(), name='triggered'),
-    path('image-manipulation/blur', views.Blur.as_view(), name='blur'),
-    path('image-manipulation/pixelate', views.Pixelate.as_view(), name='pixelate'),
-    path('image-manipulation/flip', views.Flip.as_view(), name='flip'),
-    path('image-manipulation/rotate', views.Rotate.as_view(), name='rotate'),
-    path('image-manipulation/grayscale', views.Grayscale.as_view(), name='grayscale'),
-    path('image-manipulation/blend', views.Blend.as_view(), name='blend'),
-    path('image-manipulation/enhance', views.Enhance.as_view(), name='enhance'),
+    path('image-manipulation/triggered', views_api.Triggered.as_view(), name='triggered'),
+    path('image-manipulation/blur', views_api.Blur.as_view(), name='blur'),
+    path('image-manipulation/pixelate', views_api.Pixelate.as_view(), name='pixelate'),
+    path('image-manipulation/flip', views_api.Flip.as_view(), name='flip'),
+    path('image-manipulation/rotate', views_api.Rotate.as_view(), name='rotate'),
+    path('image-manipulation/grayscale', views_api.Grayscale.as_view(), name='grayscale'),
+    path('image-manipulation/blend', views_api.Blend.as_view(), name='blend'),
+    path('image-manipulation/enhance', views_api.Enhance.as_view(), name='enhance'),
 ]
