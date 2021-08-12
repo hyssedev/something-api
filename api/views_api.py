@@ -24,13 +24,48 @@ from io import StringIO, BytesIO
 # variables
 ACCEPTED_CONTENT = ['image/jpeg', 'image/png', 'image/gif']
 
-# API ----------------------------------
+# API ----------------------------------------------
+
+# functions
 def generate_name(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 def check_content_type(url):
     return str(requests.head(url, allow_redirects=True).headers.get('content-type'))
 
+def sepia(image:Image)->Image:
+    width, height = image.size
+
+    pixels = image.load() # create the pixel map
+
+    for py in range(height):
+        for px in range(width):
+            r, g, b = image.getpixel((px, py))
+
+            tr = int(0.393 * r + 0.769 * g + 0.189 * b)
+            tg = int(0.349 * r + 0.686 * g + 0.168 * b)
+            tb = int(0.272 * r + 0.534 * g + 0.131 * b)
+
+            if tr > 255:
+                tr = 255
+
+            if tg > 255:
+                tg = 255
+
+            if tb > 255:
+                tb = 255
+
+            pixels[px, py] = (tr,tg,tb)
+
+    return image
+
+def save_image(image, path):
+    image.save(path, quality=95)
+
+def delete_image(path):
+    os.remove(path)
+
+# ENDPOINTS --------------------------
 # image-manipulation
 class Triggered(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
@@ -54,14 +89,14 @@ class Triggered(generics.ListCreateAPIView):
                 image = image.convert("RGB")
                 image.paste(triggered, (0, 181))
                 image = Image.blend(image.convert("RGBA"), red.convert("RGBA"), alpha=.4)
-                image.save(f'files/{filename}.png', quality=95)
+                save_image(image, f'files/{filename}.png')
 
             usage['triggered'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}.png")
+                delete_image(f"files/{filename}.png")
             except:
                 pass
 
@@ -89,14 +124,14 @@ class Blur(generics.ListCreateAPIView):
                 filename = generate_name()
                 image = image.resize((255, 255))
                 image = (image.convert('RGB')).filter(ImageFilter.GaussianBlur(2))
-                image.save(f'files/{filename}.png', quality=95)
+                save_image(image, f'files/{filename}.png')
 
             usage['blur'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}.png")
+                delete_image(f"files/{filename}.png")
             except:
                 pass
 
@@ -125,14 +160,14 @@ class Pixelate(generics.ListCreateAPIView):
                 image = image.resize((255, 255))
                 small_image = image.resize((32,32),resample=Image.BILINEAR)
                 image = small_image.resize(image.size,Image.NEAREST)
-                image.save(f'files/{filename}.png', quality=95)
+                save_image(image, f'files/{filename}.png')
 
             usage['pixelate'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}.png")
+                delete_image(f"files/{filename}.png")
             except:
                 pass
 
@@ -171,14 +206,14 @@ class Flip(generics.ListCreateAPIView):
                         return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
                 else:
                     image = image.transpose(Image.FLIP_LEFT_RIGHT)
-                image.save(f'files/{filename}.png', quality=95)
+                save_image(image, f'files/{filename}.png')
 
             usage['flip'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}.png")
+                delete_image(f"files/{filename}.png")
             except:
                 pass
 
@@ -217,14 +252,14 @@ class Rotate(generics.ListCreateAPIView):
                         return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
                 else:
                     image = (image.rotate(90)).convert('RGB')
-                image.save(f'files/{filename}.png', quality=95)
+                save_image(image, f'files/{filename}.png')
             
             usage['rotate'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}.png")
+                delete_image(f"files/{filename}.png")
             except:
                 pass
 
@@ -251,14 +286,14 @@ class Grayscale(generics.ListCreateAPIView):
             with Image.open(requests.get(url, stream=True).raw) as image:
                 filename = generate_name()
                 image = (image.resize((255, 255))).convert('L')
-                image.save(f'files/{filename}.png', quality=95)
+                save_image(image, f'files/{filename}.png')
 
             usage['grayscale'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}.png")
+                delete_image(f"files/{filename}.png")
             except:
                 pass
 
@@ -298,7 +333,7 @@ class Blend(generics.ListCreateAPIView):
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}.png")
+                delete_image(f"files/{filename}.png")
             except:
                 pass
 
@@ -334,14 +369,14 @@ class Enhance(generics.ListCreateAPIView):
                 elif enhance_type == 'brightness': image = ImageEnhance.Brightness(image).enhance(value)
                 elif enhance_type == 'sharpness': image = ImageEnhance.Sharpness(image).enhance(value)
                 else: return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
-                image.save(f'files/{filename}.png', quality=95)
+                save_image(image, f'files/{filename}.png')
 
             usage['enhance'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}.png")
+                delete_image(f"files/{filename}.png")
             except:
                 pass
 
@@ -370,14 +405,14 @@ class Invert(generics.ListCreateAPIView):
                 image = image.resize((255, 255))
                 image = image.convert('RGB')
                 image = ImageOps.invert(image)
-                image.save(f'files/{filename}.png', quality=95)
+                save_image(image, f'files/{filename}.png')
 
             usage['invert'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}.png")
+                delete_image(f"files/{filename}.png")
             except:
                 pass
 
@@ -406,14 +441,14 @@ class GrayscaleInvert(generics.ListCreateAPIView):
                 image = image.resize((255, 255))
                 image = image.convert('L')
                 image = ImageOps.invert(image)
-                image.save(f'files/{filename}.png', quality=95)
+                save_image(image, f'files/{filename}.png')
 
             usage['grayscaleinvert'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}.png")
+                delete_image(f"files/{filename}.png")
             except:
                 pass
 
@@ -441,14 +476,14 @@ class Emboss(generics.ListCreateAPIView):
                 filename = generate_name()
                 image = image.resize((255, 255))
                 image = image = image.convert('RGB').filter(ImageFilter.EMBOSS)
-                image.save(f'files/{filename}.png', quality=95)
+                save_image(image, f'files/{filename}.png')
 
             usage['emboss'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}.png")
+                delete_image(f"files/{filename}.png")
             except:
                 pass
 
@@ -476,14 +511,14 @@ class Contour(generics.ListCreateAPIView):
                 filename = generate_name()
                 image = image.resize((255, 255))
                 image = image = image.convert('RGB').filter(ImageFilter.CONTOUR)
-                image.save(f'files/{filename}.png', quality=95)
+                save_image(image, f'files/{filename}.png')
 
             usage['contour'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}.png")
+                delete_image(f"files/{filename}.png")
             except:
                 pass
 
@@ -511,14 +546,49 @@ class Edges(generics.ListCreateAPIView):
                 filename = generate_name()
                 image = image.resize((255, 255))
                 image = image = image.convert('RGB').filter(ImageFilter.FIND_EDGES)
-                image.save(f'files/{filename}.png', quality=95)
+                save_image(image, f'files/{filename}.png')
 
             usage['edges'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
             try:
-                os.remove(f"files/{filename}.png")
+                delete_image(f"files/{filename}.png")
+            except:
+                pass
+
+    def post(self, request):
+        # not allowing methods other than GET
+        return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class Sepia(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request):
+        try:
+            # checking if the image query is supplied
+            if 'image' not in request.GET:
+                return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
+            url = request.GET.get("image")
+
+            # checking content type
+            if check_content_type(url) not in ACCEPTED_CONTENT: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # resizing the image and then converting it to RGB, then applying the contour filter to it
+            with Image.open(requests.get(url, stream=True).raw) as image:
+                filename = generate_name()
+                image = (image.resize((255, 255))).convert('RGB')
+                image = sepia(image)
+                save_image(image, f'files/{filename}.png')
+
+            usage['sepia'] += 1
+            return FileResponse(open(f'files/{filename}.png', 'rb'))
+        finally:
+            # deleting the created file after sending it
+            try:
+                delete_image(f"files/{filename}.png")
             except:
                 pass
 

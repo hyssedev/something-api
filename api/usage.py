@@ -16,6 +16,7 @@ usage = {
     "emboss": 0,
     "contour": 0,
     "edges": 0,
+    "sepia": 0,
 }
 
 # misc for uptime
