@@ -420,3 +420,38 @@ class GrayscaleInvert(generics.ListCreateAPIView):
     def post(self, request):
         # not allowing methods other than GET
         return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class Emboss(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request):
+        try:
+            # checking if the image query is supplied
+            if 'image' not in request.GET:
+                return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
+            url = request.GET.get("image")
+
+            # checking content type
+            if check_content_type(url) not in ACCEPTED_CONTENT: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # resizing the image and then converting it to RGB, then applying the emboss filter to it
+            with Image.open(requests.get(url, stream=True).raw) as image:
+                filename = generate_name()
+                image = image.resize((255, 255))
+                image = image = image.convert('RGB').filter(ImageFilter.EMBOSS)
+                image.save(f'files/{filename}.png', quality=95)
+
+            usage['emboss'] += 1
+            return FileResponse(open(f'files/{filename}.png', 'rb'))
+        finally:
+            # deleting the created file after sending it
+            try:
+                os.remove(f"files/{filename}.png")
+            except:
+                pass
+
+    def post(self, request):
+        # not allowing methods other than GET
+        return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)

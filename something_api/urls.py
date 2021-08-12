@@ -41,4 +41,5 @@ urlpatterns = [
     path('image-manipulation/enhance', views_api.Enhance.as_view(), name='enhance'),
     path('image-manipulation/invert', views_api.Invert.as_view(), name='invert'),
     path('image-manipulation/grayscaleinvert', views_api.GrayscaleInvert.as_view(), name='grayscaleinvert'),
+    path('image-manipulation/emboss', views_api.Emboss.as_view(), name='emboss'),
 ]

@@ -13,6 +13,7 @@ usage = {
     "enhance": 0,
     "invert": 0,
     "grayscaleinvert": 0,
+    "emboss": 0,
 }
 
 # misc for uptime

@@ -236,12 +236,24 @@
           <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#grayscaleinvert" role="button" aria-expanded="false" aria-controls="grayscaleinvert">Grayscale Invert</a>
           <div class="collapse" id="grayscaleinvert">
             <div class="card card-body bg-dark">
-              <p class="fw-bold">Returns an grayscaled, inverted version of the pictures you sent as a query.<br>Method: GET<br>Queries:
+              <p class="fw-bold">Returns a grayscaled, inverted version of the pictures you sent as a query.<br>Method: GET<br>Queries:
               <ul>
                 <li>image - required</li>
               </ul>
               </p>
               <a href="{% url 'grayscaleinvert' %}">Link</a>
+            </div>
+          </div>
+          <br>
+          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#emboss" role="button" aria-expanded="false" aria-controls="emboss">Emboss</a>
+          <div class="collapse" id="emboss">
+            <div class="card card-body bg-dark">
+              <p class="fw-bold">Returns an embossed version of the pictures you sent as a query.<br>Method: GET<br>Queries:
+              <ul>
+                <li>image - required</li>
+              </ul>
+              </p>
+              <a href="{% url 'emboss' %}">Link</a>
             </div>
           </div>
 
