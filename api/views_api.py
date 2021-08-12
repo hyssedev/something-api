@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.http import HttpResponse
 import requests, os
-from PIL import Image, ImageFilter, ImageEnhance
+from PIL import Image, ImageFilter, ImageEnhance, ImageOps
 from django.http import FileResponse
 from rest_framework.views import APIView
 from rest_framework import status
@@ -247,7 +247,7 @@ class Grayscale(generics.ListCreateAPIView):
             # checking content type
             if check_content_type(url) not in ACCEPTED_CONTENT: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # doing all the stuff
+            # resizing the picture and applying grayscale effect to it
             with Image.open(requests.get(url, stream=True).raw) as image:
                 filename = generate_name()
                 image = (image.resize((255, 255))).convert('L')
@@ -285,7 +285,7 @@ class Blend(generics.ListCreateAPIView):
             if check_content_type(url) not in ACCEPTED_CONTENT: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
             elif check_content_type(url2) not in ACCEPTED_CONTENT: return JsonResponse({"detail":"invalid image2 content type."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # doing all the stuff
+            # resizing both images, converting them to rgba and then blending them together
             with Image.open(requests.get(url, stream=True).raw) as image, Image.open(requests.get(url2, stream=True).raw) as image2:
                 filename = generate_name()
                 image = image.resize((255, 255))
@@ -337,6 +337,42 @@ class Enhance(generics.ListCreateAPIView):
                 image.save(f'files/{filename}.png', quality=95)
 
             usage['enhance'] += 1
+            return FileResponse(open(f'files/{filename}.png', 'rb'))
+        finally:
+            # deleting the created file after sending it
+            try:
+                os.remove(f"files/{filename}.png")
+            except:
+                pass
+
+    def post(self, request):
+        # not allowing methods other than GET
+        return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class Invert(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request):
+        try:
+            # checking if the image query is supplied
+            if 'image' not in request.GET:
+                return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
+            url = request.GET.get("image")
+
+            # checking content type
+            if check_content_type(url) not in ACCEPTED_CONTENT: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # resizing the image and then converting it to RGB, then inverting its colours
+            with Image.open(requests.get(url, stream=True).raw) as image:
+                filename = generate_name()
+                image = image.resize((255, 255))
+                image = image.convert('RGB')
+                image = ImageOps.invert(image)
+                image.save(f'files/{filename}.png', quality=95)
+
+            usage['invert'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it

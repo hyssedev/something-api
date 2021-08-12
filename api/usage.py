@@ -11,6 +11,7 @@ usage = {
     "grayscale": 0,
     "blend": 0,
     "enhance": 0,
+    "invert": 0,
 }
 
 # misc for uptime
