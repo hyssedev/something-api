@@ -54,6 +54,7 @@ def dashboard(request):
         "invert": usage['invert'],
         "grayscaleinvert": usage['grayscaleinvert'],
         "emboss": usage['emboss'],
+        "contour": usage['contour'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),
