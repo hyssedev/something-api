@@ -52,6 +52,7 @@ def dashboard(request):
         "blend": usage['blend'],
         "enhance": usage['enhance'],
         "invert": usage['invert'],
+        "grayscaleinvert": usage['grayscaleinvert'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),
