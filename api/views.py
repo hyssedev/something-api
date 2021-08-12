@@ -61,6 +61,7 @@ def dashboard(request):
         "gay": usage['gay'],
         "urss": usage['urss'],
         "jail": usage['jail'],
+        "missionpassed": usage['missionpassed'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),
