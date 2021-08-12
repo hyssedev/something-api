@@ -60,6 +60,7 @@ def dashboard(request):
         "colorfilter": usage['colorfilter'],
         "gay": usage['gay'],
         "urss": usage['urss'],
+        "jail": usage['jail'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),

@@ -48,4 +48,5 @@ urlpatterns = [
     path('image-manipulation/colorfilter', views_api.ColorFilter.as_view(), name='colorfilter'),
     path('image-manipulation/gay', views_api.Gay.as_view(), name='gay'),
     path('image-manipulation/urss', views_api.Urss.as_view(), name='urss'),
+    path('image-manipulation/jail', views_api.Jail.as_view(), name='jail'),
 ]

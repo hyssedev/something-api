@@ -20,6 +20,7 @@ usage = {
     "colorfilter": 0,
     "gay": 0,
     "urss": 0,
+    "jail": 0,
 }
 
 # misc for uptime
