@@ -43,4 +43,5 @@ urlpatterns = [
     path('image-manipulation/grayscaleinvert', views_api.GrayscaleInvert.as_view(), name='grayscaleinvert'),
     path('image-manipulation/emboss', views_api.Emboss.as_view(), name='emboss'),
     path('image-manipulation/contour', views_api.Contour.as_view(), name='contour'),
+    path('image-manipulation/edges', views_api.Edges.as_view(), name='edges'),
 ]

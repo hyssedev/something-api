@@ -15,6 +15,7 @@ usage = {
     "grayscaleinvert": 0,
     "emboss": 0,
     "contour": 0,
+    "edges": 0,
 }
 
 # misc for uptime
