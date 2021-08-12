@@ -57,6 +57,7 @@ def dashboard(request):
         "contour": usage['contour'],
         "edges": usage['edges'],
         "sepia": usage['sepia'],
+        "colorfilter": usage['colorfilter'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),

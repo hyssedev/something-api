@@ -23,19 +23,23 @@ from io import StringIO, BytesIO
 
 # variables
 ACCEPTED_CONTENT = ['image/jpeg', 'image/png', 'image/gif']
+ACCEPTED_COLORS = ['red', 'blue', 'green', 'yellow', 'purple']
 
 # API ----------------------------------------------
 
 # functions
+
+# generating temporary filenames
 def generate_name(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
+# content type checking (gif, png, etc)
 def check_content_type(url):
     return str(requests.head(url, allow_redirects=True).headers.get('content-type'))
 
+# sepia function for the sepia endpoint
 def sepia(image:Image)->Image:
     width, height = image.size
-
     pixels = image.load() # create the pixel map
 
     for py in range(height):
@@ -64,6 +68,43 @@ def save_image(image, path):
 
 def delete_image(path):
     os.remove(path)
+
+# colors and the color_filter function for the color filter endpoint
+def red(r, g, b):
+    newr = r
+    return (newr, 0, 0)
+
+def blue(r, g, b):
+    newb = b
+    return (0, 0, newb)
+
+def green(r, g, b):
+    newg = g
+    return (0, newg, 0)
+
+def yellow(r, g, b):
+    newr = r
+    newg = g
+    return (newr, newg, 0)
+
+def purple(r, g, b):
+    newr = int(r/2)
+    newb = int(b/2)
+    return (newr, 0, newb)
+
+def color_filter(type:str, image:Image):
+    width, height = image.size
+    pixels = image.load() # create the pixel map
+
+    for py in range(height):
+        for px in range(width):
+            r, g, b = image.getpixel((px, py))
+            if type == 'red': pixels[px, py] = red(r,g,b)
+            elif type == 'blue': pixels[px, py] = blue(r,g,b)
+            elif type == 'green': pixels[px, py] = green(r,g,b)
+            elif type == 'yellow': pixels[px, py] = yellow(r,g,b)
+            elif type == 'purple': pixels[px, py] = purple(r,g,b)
+    return image
 
 # ENDPOINTS --------------------------
 # image-manipulation
@@ -584,6 +625,43 @@ class Sepia(generics.ListCreateAPIView):
                 save_image(image, f'files/{filename}.png')
 
             usage['sepia'] += 1
+            return FileResponse(open(f'files/{filename}.png', 'rb'))
+        finally:
+            # deleting the created file after sending it
+            try:
+                delete_image(f"files/{filename}.png")
+            except:
+                pass
+
+    def post(self, request):
+        # not allowing methods other than GET
+        return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class ColorFilter(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request):
+        try:
+            # checking if the image query is supplied
+            if 'image' not in request.GET: return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
+            elif 'type' not in request.GET: return JsonResponse({"detail":"missing type query."}, status=status.HTTP_400_BAD_REQUEST)
+            url = request.GET.get("image")
+            color_type = request.GET.get("type")
+            if color_type not in ACCEPTED_COLORS: return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # checking content type
+            if check_content_type(url) not in ACCEPTED_CONTENT: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # resizing the image and then converting it to RGB, then applying the contour filter to it
+            with Image.open(requests.get(url, stream=True).raw) as image:
+                filename = generate_name()
+                image = (image.resize((255, 255))).convert('RGB')
+                image = color_filter(color_type, image)
+                save_image(image, f'files/{filename}.png')
+
+            usage['colorfilter'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it

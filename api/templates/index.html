@@ -292,6 +292,19 @@
               <a href="{% url 'sepia' %}">Link</a>
             </div>
           </div>
+          <br>
+          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#colorfilter" role="button" aria-expanded="false" aria-controls="colorfilter">Color Filter</a>
+          <div class="collapse" id="colorfilter">
+            <div class="card card-body bg-dark">
+              <p class="fw-bold">Returns a color filtered version of the pictures you sent as a query.<br>Method: GET<br>Queries:
+              <ul>
+                <li>image - required</li>
+                <li>type - required (red, green, blue, yellow, purple)</li>
+              </ul>
+              </p>
+              <a href="{% url 'colorfilter' %}">Link</a>
+            </div>
+          </div>
 
         </div>
       </div>
