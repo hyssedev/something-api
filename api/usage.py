@@ -22,6 +22,7 @@ usage = {
     "urss": 0,
     "jail": 0,
     "missionpassed": 0,
+    "wanted": 0,
 }
 
 # misc for uptime

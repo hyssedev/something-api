@@ -62,6 +62,7 @@ def dashboard(request):
         "urss": usage['urss'],
         "jail": usage['jail'],
         "missionpassed": usage['missionpassed'],
+        "wanted": usage['wanted'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),

@@ -50,4 +50,5 @@ urlpatterns = [
     path('image-manipulation/urss', views_api.Urss.as_view(), name='urss'),
     path('image-manipulation/jail', views_api.Jail.as_view(), name='jail'),
     path('image-manipulation/missionpassed', views_api.MissionPassed.as_view(), name='missionpassed'),
+    path('image-manipulation/wanted', views_api.Wanted.as_view(), name='wanted'),
 ]
