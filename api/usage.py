@@ -23,6 +23,7 @@ usage = {
     "jail": 0,
     "missionpassed": 0,
     "wanted": 0,
+    "wasted": 0,
 }
 
 # misc for uptime
