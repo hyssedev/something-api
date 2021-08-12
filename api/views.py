@@ -64,6 +64,7 @@ def dashboard(request):
         "missionpassed": usage['missionpassed'],
         "wanted": usage['wanted'],
         "wasted": usage['wasted'],
+        "busted": usage['busted'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),

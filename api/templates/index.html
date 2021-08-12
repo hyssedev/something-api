@@ -330,7 +330,7 @@
             </div>
           </div>
           <br>
-          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#jail" role="button" aria-expanded="false" aria-controls="jail">jail</a>
+          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#jail" role="button" aria-expanded="false" aria-controls="jail">Jail</a>
           <div class="collapse" id="jail">
             <div class="card card-body bg-dark">
               <p class="fw-bold">Returns a jail overlayed version of the pictures you sent as a query.<br>Method: GET<br>Queries:
@@ -375,6 +375,18 @@
               </ul>
               </p>
               <a href="{% url 'wasted' %}">Link</a>
+            </div>
+          </div>
+          <br>
+          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#busted" role="button" aria-expanded="false" aria-controls="busted">Busted</a>
+          <div class="collapse" id="busted">
+            <div class="card card-body bg-dark">
+              <p class="fw-bold">Returns a busted overlayed version of the pictures you sent as a query.<br>Method: GET<br>Queries:
+              <ul>
+                <li>image - required</li>
+              </ul>
+              </p>
+              <a href="{% url 'busted' %}">Link</a>
             </div>
           </div>
 

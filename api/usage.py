@@ -24,6 +24,7 @@ usage = {
     "missionpassed": 0,
     "wanted": 0,
     "wasted": 0,
+    "busted": 0,
 }
 
 # misc for uptime
