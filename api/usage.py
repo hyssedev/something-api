@@ -25,6 +25,7 @@ usage = {
     "wanted": 0,
     "wasted": 0,
     "busted": 0,
+    "simpcard": 0,
 }
 
 # misc for uptime
