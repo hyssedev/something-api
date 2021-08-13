@@ -27,6 +27,7 @@ usage = {
     "busted": 0,
     "simpcard": 0,
     "hornylicense": 0,
+    "hornylicense2": 0,
 }
 
 # misc for uptime

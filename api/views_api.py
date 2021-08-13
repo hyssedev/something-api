@@ -978,14 +978,50 @@ class HornyLicense(generics.ListCreateAPIView):
             # resizing both images, converting them to rgba and then blending them together
             with Image.open(requests.get(url, stream=True).raw) as image, Image.open("api/utilities/horny_license.png") as license:
                 filename = generate_name()
-                image = image.resize((165, 165))
+                image = image.resize((150, 150))
                 # i need to create a image with our avatar in the transparent box and have the rest of the image transparent, then paste the license over it
                 transparent = Image.new('RGBA', license.size, (0, 0, 0, 0))
-                transparent.paste(image.convert("RGBA").rotate(-11), (547, 180))
+                transparent.paste(image.convert("RGBA").rotate(-7, resample=Image.BICUBIC, expand=True), (544, 180))
                 transparent.paste(license, (0,0), license.convert('RGBA'))
                 save_image(transparent, f'files/{filename}.png')
 
             usage['hornylicense'] += 1
+            return FileResponse(open(f'files/{filename}.png', 'rb'))
+        finally:
+            # deleting the created file after sending it
+            try:
+                delete_image(f"files/{filename}.png")
+            except:
+                pass
+
+    def post(self, request):
+        # not allowing methods other than GET
+        return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class HornyLicense2(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request):
+        try:
+            # checking if the image query is supplied
+            if 'image' not in request.GET:
+                return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
+            url = request.GET.get("image")
+
+            # checking content type
+            if check_content_type(url) not in ACCEPTED_CONTENT: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # resizing image, create a transparent mask and then paste it over the license
+            with Image.open(requests.get(url, stream=True).raw) as image, Image.open("api/utilities/horny_license2.png") as license:
+                filename = generate_name()
+                image = image.resize((131, 131))
+                mask = Image.new('L', image.size, 255)
+                license.paste(image.convert("RGBA").rotate(22, resample=Image.BICUBIC, expand=True), (54, 160), mask.rotate(22, expand=True))
+                save_image(license, f'files/{filename}.png')
+
+            usage['hornylicense2'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
