@@ -27,6 +27,7 @@ urlpatterns = [
     path('documentation/authorization', views.documentation_auth, name='documentation/authorization'),
     path('documentation/errors', views.documentation_errors, name='documentation/errors'),
     path('documentation/ratelimits', views.documentation_ratelimits, name='documentation/ratelimits'),
+    path('documentation/gettingstarted', views.documentation_gettingstarted, name='documentation/gettingstarted'),
 
     # user register login logout
     path('register/', views.register, name='register'),

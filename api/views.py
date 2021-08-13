@@ -88,6 +88,9 @@ def documentation_errors(request):
 def documentation_ratelimits(request):
     return render(request, "documentation/ratelimits.html")
 
+def documentation_gettingstarted(request):
+    return render(request, "documentation/gettingstarted.html")
+
 # registering user
 @ratelimit(key="ip", rate="5/m", method=["GET", "POST"], block=True)
 def register(request):
