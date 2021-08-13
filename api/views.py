@@ -66,6 +66,7 @@ def dashboard(request):
         "wasted": usage['wasted'],
         "busted": usage['busted'],
         "simpcard": usage['simpcard'],
+        "hornylicense": usage['hornylicense'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),

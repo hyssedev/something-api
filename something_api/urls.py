@@ -54,4 +54,5 @@ urlpatterns = [
     path('image-manipulation/wasted', views_api.Wasted.as_view(), name='wasted'),
     path('image-manipulation/busted', views_api.Busted.as_view(), name='busted'),
     path('image-manipulation/simpcard', views_api.SimpCard.as_view(), name='simpcard'),
+    path('image-manipulation/hornylicense', views_api.HornyLicense.as_view(), name='hornylicense'),
 ]
