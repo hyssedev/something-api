@@ -79,6 +79,12 @@ def dashboard(request):
 def documentation(request):
     return render(request, "documentation/introduction.html")
 
+def documentation_auth(request):
+    return render(request, "documentation/authorization.html")
+
+def documentation_errors(request):
+    return render(request, "documentation/errors.html")
+
 # registering user
 @ratelimit(key="ip", rate="5/m", method=["GET", "POST"], block=True)
 def register(request):

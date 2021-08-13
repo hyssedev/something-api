@@ -1,0 +1,13 @@
+{% extends 'documentation/base.html' %}
+{% load static %}
+{% block body %}
+<div class="container-fluid mx-3">
+    <h1 class="mt-5">Authorization</h1>
+    <hr>
+    <p class="mx-3">Something API uses Authorization Tokens to authorize requests. You can view your token in our dashboard.<br><br>Users are given a token after paying the subscription and they are revoked if the user decides to cancel his subscription or the user does not follow our rules. Your token carries many privileges, so be sure to keep it secure! Do not share your secret token in publicly accessible areas such as GitHub, client-side code, and so forth.</p>
+    <br><br>
+    <h3>Authorizing a request</h1>
+    <hr>
+    <p>To authorize a request, you need to add an <code>Authorization</code> header in your request with the following value: <code>Token yourtoken</code>, where <code>yourtoken</code> is the token visible in our dashboard.</p>
+</div>
+{% endblock body %}

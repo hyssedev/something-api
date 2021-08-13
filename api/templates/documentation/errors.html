@@ -1,0 +1,57 @@
+{% extends 'documentation/base.html' %}
+{% load static %}
+{% block body %}
+<div class="container-fluid mx-3">
+    <h1 class="mt-5">Errors</h1>
+    <hr>
+    <p class="mx-3">Something API uses conventional HTTP response codes to indicate the success or failure of an API request. In general: Codes in the <code>2xx</code> range indicate success. Codes in the <code>4xx</code> range indicate an error that failed given the information provided (e.g., a required parameter was omitted etc.). Codes in the <code>5xx</code> range indicate an error with Something API's servers (these are rare, however if you encounter these, open a ticket in our Discord). Some <code>4xx</code> errors that could be handled programmatically include an error code that briefly explains the error reported.</p>
+    <table class="table table-sm table-dark table-borderless">
+        <thead>
+            <tr>
+              <th scope="col">HTTP Code</th>
+              <th scope="col">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>200 - OK</b></td>
+              <td>Everything worked as expected.</td>
+            </tr>
+            <tr>
+              <td><b>400 - Bad Request</b>></td>
+              <td>The request was unacceptable, often due to missing a required parameter.</td>
+            </tr>
+            <tr>
+                <td><b>401 - Unauthorized</b></td>
+                <td>No valid API key provided.</td>
+            </tr>
+            <tr>
+                <td><b>402 - Request Failed</b></td>
+                <td>The parameters were valid but the request failed.</td>
+            </tr>
+            <tr>
+                <td><b>404 - Not Found</b></td>
+                <td>The requested resource doesn't exist.</td>
+            </tr>
+            <tr>
+                <td><b>429 - Too Many Requests</b></td>
+                <td>Too many requests hit the API too quickly.</td>
+            </tr>
+            <tr>
+                <td><b>500, 502, 503, 504 - Server Errors</b></td>
+                <td>Something went wrong on our end.</td>
+            </tr>
+          </tbody>
+    </table>
+    <h3 class="mt-5">Common errors</h1>
+    <hr>
+    <ol>
+        <li class="fs-5"><code>{"detail":"Method x not allowed."}</code><br><p class="fs-6">We only allow <code>GET</code> requests.</p></li>
+        <li class="fs-5"><code>{"detail":"invalid x content type."}</code><br><p class="fs-6">Your <code>x</code> query is not in the expected format. Check the documentation for the specific endpoint you want to access.</p></li>
+        <li class="fs-5"><code>{"detail":"missing x query."}</code><br><p class="fs-6">You don't include the required <code>x</code> query in your request.</p></li>
+        <li class="fs-5"><code>{"detail":"invalid x query."}</code><br><p class="fs-6">Your <code>x</code> query is invalid. Check the documentation for the specific endpoint you want to access.</p></li>
+        <li class="fs-5">My error is not listed here, what do I do?<br><p class="fs-6">Please create a ticket on our Discord for us to solve the issue.</p></li>
+    </ol>
+    <p>Here, <code>x</code> is used as an example.</p>
+</div>
+{% endblock body %}
