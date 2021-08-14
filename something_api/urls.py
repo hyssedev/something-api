@@ -64,4 +64,7 @@ urlpatterns = [
     path('api/image-manipulation/hornylicense', views_api.HornyLicense.as_view(), name='hornylicense'),
     path('api/image-manipulation/hornylicense2', views_api.HornyLicense2.as_view(), name='hornylicense2'),
     path('api/image-manipulation/whodidthis', views_api.WhoDidThis.as_view(), name='whodidthis'),
+    
+    # -- Utilities --
+    path('api/image-manipulation/colorviewer', views_api.ColorViewer.as_view(), name='colorviewer'),
 ]

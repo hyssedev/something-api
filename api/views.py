@@ -71,6 +71,7 @@ def dashboard(request):
         "hornylicense": usage['hornylicense'],
         "hornylicense2": usage['hornylicense2'],
         "whodidthis": usage['whodidthis'],
+        "colorviewer": usage['colorviewer'],
 
         "total": total,
         "average": round(total/minutes_uptime, 1),

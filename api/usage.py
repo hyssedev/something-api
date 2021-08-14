@@ -29,6 +29,7 @@ usage = {
     "hornylicense": 0,
     "hornylicense2": 0,
     "whodidthis": 0,
+    "colorviewer": 0,
 }
 
 # misc for uptime

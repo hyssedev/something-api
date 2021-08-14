@@ -159,5 +159,29 @@
     <p class="mx-2"><b>400 Bad Request</b> • Response type: json<br>Output: <code>{"detail":"missing x query."}</code> or <code>{"detail":"invalid x content type."}</code></p>
     <p class="mx-2"><b>405 Method Not Allowed</b> • Response type: json<br>Output: <code>{"detail":"Method x not allowed."}</code></p>
     <p class="mx-2"><b>429 Too Many Requests</b> • Response type: json<br>Output: <code>{"detail": "Request was throttled. Expected available in x seconds."}</code></p>
+    <hr>
+    <h2 class="mt-3 mx-2">Utilities</h2>
+    <div class="table table-sm table-dark">
+        <table class="table align-middle text-white">
+          <thead>
+            <tr>
+                <th scope="col">Endpoint</th>
+                <th scope="col">Queries</th>
+              </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td>Color Viewer • <a href="{% url 'colorviewer' %}">Link</a></td>
+                <td>color - required (e.g. rgb(r, g, b) or hex without the # e.g. 000000)</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    <p>All the utilities endpoints have the following output:</p>
+    <p class="mx-2"><b>200 OK</b> • Response type: image/png<br>Output: <code>PNG image</code></p>
+    <p class="mx-2"><b>400 Bad Request</b> • Response type: json<br>Output: <code>{"detail":"missing x query."}</code> or <code>{"detail":"invalid x type."}</code></p>
+    <p class="mx-2"><b>405 Method Not Allowed</b> • Response type: json<br>Output: <code>{"detail":"Method x not allowed."}</code></p>
+    <p class="mx-2"><b>429 Too Many Requests</b> • Response type: json<br>Output: <code>{"detail": "Request was throttled. Expected available in x seconds."}</code></p>
 </div>
 {% endblock body %}

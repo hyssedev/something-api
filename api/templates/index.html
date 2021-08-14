@@ -456,16 +456,18 @@
           <h4 class="my-1 fw-bold">Utilities</h4>
         </div>
         <div class="card-body">
-          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#endpoint3" role="button" aria-expanded="false" aria-controls="endpoint3">Endpoint 3</a>
-          <div class="collapse" id="endpoint3">
+          <a class="text-decoration-none text-white" data-bs-toggle="collapse" href="#colorviewer" role="button" aria-expanded="false" aria-controls="colorviewer">Color Viewer</a>
+          <div class="collapse" id="colorviewer">
             <div class="card card-body bg-dark">
-              <p class="fw-bold">Description<br>Method: GET<br>Queries:
+              <p class="fw-bold">Return a picture of the color you sent as a query.<br>Method: GET<br>Queries:
               <ul>
-                <li>None</li>
+                <li>color - required (e.g. rgb(r, g, b) or hex without the # e.g. 000000)</li>
               </ul>
               </p>
+              <button type="button" class="btn btn-info"><a href="{% url 'edges' %}" class="text-decoration-none text-dark">Link</a></button>
             </div>
           </div>
+
         </div>
       </div>
     </div>

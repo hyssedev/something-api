@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.http import HttpResponse
 import requests, os
-from PIL import Image, ImageFilter, ImageEnhance, ImageOps
+from PIL import Image, ImageFilter, ImageEnhance, ImageOps, ImageColor
 from django.http import FileResponse
 from rest_framework.views import APIView
 from rest_framework import status
@@ -1084,6 +1084,46 @@ class WhoDidThis(generics.ListCreateAPIView):
                 save_image(meme, f'files/{filename}.png')
 
             usage['whodidthis'] += 1
+            return FileResponse(open(f'files/{filename}.png', 'rb'))
+        finally:
+            # deleting the created file after sending it
+            try:
+                delete_image(f"files/{filename}.png")
+            except:
+                pass
+
+    def post(self, request):
+        # not allowing methods other than GET
+        return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+# --- Utilities ---
+class ColorViewer(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
+
+    def get(self, request):
+        try:
+            # checking if the image query is supplied
+            if 'color' not in request.GET:
+                return JsonResponse({"detail":"missing color query."}, status=status.HTTP_400_BAD_REQUEST)
+            color = request.GET.get("color")
+
+            # checking if the color passed is an rgb or a hex
+            if not 'rgb' in color: color = '#' + str(color)
+            else: pass
+            
+            try:
+                color = ImageColor.getrgb(color)
+            except:
+                return JsonResponse({"detail":"invalid color type."}, status=status.HTTP_400_BAD_REQUEST)
+
+            img = Image.new('RGB',(200,200),color)
+            filename = generate_name()
+            save_image(img, f'files/{filename}.png')
+
+            usage['colorviewer'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
