@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.views.decorators.cache import cache_page
 from api import views
 from api import views_api
 
@@ -22,7 +23,7 @@ urlpatterns = [
     # front-end
     path('admin/', admin.site.urls),
     path('', views.home, name='index'),
-    path('dashboard/', views.dashboard, name='dashboard'),
+    path('dashboard/', cache_page(60 * 5)(views.dashboard), name='dashboard'),
     path('documentation/', views.documentation, name='documentation'),
     path('documentation/authorization', views.documentation_auth, name='documentation/authorization'),
     path('documentation/errors', views.documentation_errors, name='documentation/errors'),

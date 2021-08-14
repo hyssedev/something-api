@@ -40,7 +40,7 @@ def dashboard(request):
     total = sum(usage.values())
     minutes_uptime = (datetime.datetime.utcnow() - uptime).total_seconds() / 60.0
     context = {
-        "title":"Something API - Dashboard",
+        "title":"sAPI - Dashboard",
         "token":f"{token}",
         "uptime": human_timedelta(uptime),
         "triggered": usage['triggered'],
