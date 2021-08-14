@@ -6,6 +6,6 @@ Something API is a REST API made in Python, using Django REST Framework. The mai
 **this readme will be improved while I work on the project**
 ## Authors
 
-- [@SauciucIonut](https://github.com/SauciucIonut)
+- [@saucrio](https://github.com/saucrio)
 
   
