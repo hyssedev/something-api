@@ -20,6 +20,7 @@ from rest_framework.renderers import JSONRenderer
 from .usage import human_timedelta, uptime, usage
 import datetime, string, random, urllib
 from io import StringIO, BytesIO
+from rest_framework.throttling import UserRateThrottle
 
 # variables
 ACCEPTED_CONTENT = ['image/jpeg', 'image/png', 'image/gif']
@@ -112,6 +113,7 @@ class Triggered(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -149,6 +151,7 @@ class Blur(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -184,6 +187,7 @@ class Pixelate(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -220,6 +224,7 @@ class Flip(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -266,6 +271,7 @@ class Rotate(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -312,6 +318,7 @@ class Grayscale(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -346,6 +353,7 @@ class Blend(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -386,6 +394,7 @@ class Enhance(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -429,6 +438,7 @@ class Invert(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -465,6 +475,7 @@ class GrayscaleInvert(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -501,6 +512,7 @@ class Emboss(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -536,6 +548,7 @@ class Contour(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -571,6 +584,7 @@ class Edges(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -606,6 +620,7 @@ class Sepia(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -641,6 +656,7 @@ class ColorFilter(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -678,6 +694,7 @@ class Gay(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -713,6 +730,7 @@ class Urss(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -748,6 +766,7 @@ class Jail(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -784,6 +803,7 @@ class MissionPassed(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -820,6 +840,7 @@ class Wanted(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -856,6 +877,7 @@ class Wasted(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -892,6 +914,7 @@ class Busted(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -928,6 +951,7 @@ class SimpCard(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -964,6 +988,7 @@ class HornyLicense(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -1002,6 +1027,7 @@ class HornyLicense2(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
@@ -1038,6 +1064,7 @@ class WhoDidThis(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request):
         try:
