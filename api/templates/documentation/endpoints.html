@@ -1,0 +1,163 @@
+{% extends 'documentation/base.html' %}
+{% load static %}
+{% block body %}
+<style>
+    a {
+        text-decoration: none;
+        color:#0DCAF0;
+    }
+
+    .table td {
+        text-align: center;   
+    }
+    
+    .table th {
+        text-align: center;   
+    }
+</style>
+<div class="container-fluid mx-3">
+    <h1 class="mt-5">Endpoints</h1>
+    <h6>Every endpoint uses the <code>GET</code> method.</h6>
+    <hr>
+    <h2 class="mt-3 mx-2">Memes</h2>
+    <div class="table table-sm table-dark">
+        <table class="table align-middle text-white">
+          <thead>
+            <tr>
+                <th scope="col">Endpoint</th>
+                <th scope="col">Queries</th>
+              </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td>Triggered • <a href="{% url 'triggered' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Gay • <a href="{% url 'gay' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>URSS • <a href="{% url 'urss' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Jail • <a href="{% url 'jail' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Mission Passed • <a href="{% url 'missionpassed' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Wanted • <a href="{% url 'wanted' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Wasted • <a href="{% url 'wasted' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Busted • <a href="{% url 'busted' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Simp Card • <a href="{% url 'simpcard' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Horny License • <a href="{% url 'hornylicense' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Horny License 2 • <a href="{% url 'hornylicense2' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Who Did this • <a href="{% url 'whodidthis' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    <p>All the meme endpoints have the following output:</p>
+    <p class="mx-2"><b>200 OK</b> • Response type: image/png<br>Output: <code>PNG image</code></p>
+    <p class="mx-2"><b>400 Bad Request</b> • Response type: json<br>Output: <code>{"detail":"missing x query."}</code> or <code>{"detail":"invalid x content type."}</code></p>
+    <p class="mx-2"><b>405 Method Not Allowed</b> • Response type: json<br>Output: <code>{"detail":"Method x not allowed."}</code></p>
+    <p class="mx-2"><b>429 Too Many Requests</b> • Response type: json<br>Output: <code>{"detail": "Request was throttled. Expected available in x seconds."}</code></p>
+    <hr>
+    <h2 class="mt-3 mx-2">Image Effect & Editing</h2>
+    <div class="table table-sm table-dark">
+        <table class="table align-middle text-white">
+          <thead>
+            <tr>
+                <th scope="col">Endpoint</th>
+                <th scope="col">Queries</th>
+              </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td>Enhance • <a href="{% url 'enhance' %}">Link</a></td>
+                <td>image - required<br>type - required (contrast/color/brightness/sharpness)<br>value - required</td>
+            </tr>
+            <tr>
+                <td>Color Filter • <a href="{% url 'colorfilter' %}">Link</a></td>
+                <td>image - required<br>type - required (red, green, blue, yellow, purple)</td>
+            </tr>
+            <tr>
+                <td>Flip • <a href="{% url 'flip' %}">Link</a></td>
+                <td>image - required<br>type - optional (vertical/horizontal) defaults to horizontal</td>
+            </tr>
+            <tr>
+                <td>Rotate • <a href="{% url 'rotate' %}">Link</a></td>
+                <td>image - required<br>type - optional (left/right) defaults to right</td>
+            </tr>
+            <tr>
+                <td>Blend • <a href="{% url 'blend' %}">Link</a></td>
+                <td>image - required<br>image2 - required</td>
+            </tr>
+            <tr>
+                <td>Pixelate • <a href="{% url 'pixelate' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Blur • <a href="{% url 'blur' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Grayscale • <a href="{% url 'grayscale' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Sepia • <a href="{% url 'sepia' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+                <td>Invert • <a href="{% url 'invert' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Grayscale Invert • <a href="{% url 'grayscaleinvert' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Emboss • <a href="{% url 'emboss' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Contour • <a href="{% url 'contour' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+            <tr>
+                <td>Edges • <a href="{% url 'edges' %}">Link</a></td>
+                <td>image - required</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    <p>All the image effects & editing endpoints have the following output:</p>
+    <p class="mx-2"><b>200 OK</b> • Response type: image/png<br>Output: <code>PNG image</code></p>
+    <p class="mx-2"><b>400 Bad Request</b> • Response type: json<br>Output: <code>{"detail":"missing x query."}</code> or <code>{"detail":"invalid x content type."}</code></p>
+    <p class="mx-2"><b>405 Method Not Allowed</b> • Response type: json<br>Output: <code>{"detail":"Method x not allowed."}</code></p>
+    <p class="mx-2"><b>429 Too Many Requests</b> • Response type: json<br>Output: <code>{"detail": "Request was throttled. Expected available in x seconds."}</code></p>
+</div>
+{% endblock body %}

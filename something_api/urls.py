@@ -30,6 +30,7 @@ urlpatterns = [
     path('documentation/ratelimits', views.documentation_ratelimits, name='documentation/ratelimits'),
     path('documentation/gettingstarted', views.documentation_gettingstarted, name='documentation/gettingstarted'),
     path('documentation/examples', views.documentation_examples, name='documentation/examples'),
+    path('documentation/endpoints', views.documentation_endpoints, name='documentation/endpoints'),
 
     # user register login logout
     path('register/', views.register, name='register'),

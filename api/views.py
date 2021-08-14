@@ -102,6 +102,10 @@ def documentation_gettingstarted(request):
 def documentation_examples(request):
     return render(request, "documentation/examples.html")
 
+@ratelimit(key="ip", rate="30/m", method=["GET"], block=True)
+def documentation_endpoints(request):
+    return render(request, "documentation/endpoints.html")
+
 # registering user
 @ratelimit(key="ip", rate="5/m", method=["GET", "POST"], block=True)
 def register(request):
