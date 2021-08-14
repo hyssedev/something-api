@@ -24,10 +24,12 @@ from io import StringIO, BytesIO
 # FRONT-END VIEWS --------------
 
 # index
+@ratelimit(key="ip", rate="30/m", method=["GET"], block=True)
 def home(request):
     return render(request, "index.html")
 
 # dashboard
+@ratelimit(key="ip", rate="30/m", method=["GET"], block=True)
 def dashboard(request):
     if not request.user.is_authenticated:
         return redirect("login")
@@ -76,21 +78,27 @@ def dashboard(request):
     return render(request, "dashboard.html", context)
 
 # documentation
+@ratelimit(key="ip", rate="30/m", method=["GET"], block=True)
 def documentation(request):
     return render(request, "documentation/introduction.html")
 
+@ratelimit(key="ip", rate="30/m", method=["GET"], block=True)
 def documentation_auth(request):
     return render(request, "documentation/authorization.html")
 
+@ratelimit(key="ip", rate="30/m", method=["GET"], block=True)
 def documentation_errors(request):
     return render(request, "documentation/errors.html")
 
+@ratelimit(key="ip", rate="30/m", method=["GET"], block=True)
 def documentation_ratelimits(request):
     return render(request, "documentation/ratelimits.html")
 
+@ratelimit(key="ip", rate="30/m", method=["GET"], block=True)
 def documentation_gettingstarted(request):
     return render(request, "documentation/gettingstarted.html")
 
+@ratelimit(key="ip", rate="30/m", method=["GET"], block=True)
 def documentation_examples(request):
     return render(request, "documentation/examples.html")
 
