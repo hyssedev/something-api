@@ -36,9 +36,11 @@
 					<br>
 					<form method="POST" id="login" class="text-center">
 						{% csrf_token %}
-						<input style="background-color: #212529;" class="form-control border-0 text-white" type="" name="username" for="id_{{ field.name }}" placeholder="Username">
+						<p>Username</p>
+						<input style="background-color: #212529;" class="form-control border-0 text-white" type="" name="username" for="id_{{ field.name }}">
 						<br>
-						<input style="background-color: #212529;" class="form-control border-0 text-white" type="password" name="password" for="id_{{ field.name }}" placeholder="Password">
+						<p>Password</p>
+						<input style="background-color: #212529;" class="form-control border-0 text-white" type="password" name="password" for="id_{{ field.name }}">
 						<br>
 						<button class="btn btn-info btn-sm border-0" type="submit" name="submit">Sign In</button>
 						<p class="forgot"><a href="">Forgot Password?</a></p>

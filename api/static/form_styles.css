@@ -86,18 +86,4 @@ body {
 .forgot a:hover {
     color: #0ba8c8;
 }
-
-/*support google chrome*/
-.form-control::-webkit-input-placeholder{
-	color: #00000036;
-}
-
-/*support mozilla*/
-.form-control:-moz-input-placeholder{
-	color: red;
-}
-
-/*support internet explorer*/
-.form-control:-ms-input-placeholder{
-	color: red;
-}
+  

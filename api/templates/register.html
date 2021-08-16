@@ -43,14 +43,14 @@
                         {% csrf_token %}
                         {% for field in form %}
                         {% if field.name == 'password1' or field.name == 'password2' %}
-                        <input style="background-color: #212529;" class="form-control border-0 text-white" type="password" name="{{ field.name }}" placeholder="{{ field.label }}">
-                        <br>
+                        <p>{{ field.label }}</p>
+                        <input style="background-color: #212529;" class="form-control border-0 text-white mb-1" type="password" name="{{ field.name }}">
                         {% else %}
-                        <input style="background-color: #212529;" class="form-control border-0 text-white" type="" name="{{ field.name }}" placeholder="{{ field.label }}">
-                        <br>
+                        <p>{{ field.label }}</p>
+                        <input style="background-color: #212529;" class="form-control border-0 text-white mb-1" type="" name="{{ field.name }}">
                         {% endif %}
                         {% endfor %}
-						<button class="btn btn-info btn-sm border-0" type="submit" name="submit">Sign In</button>
+						<button class="btn btn-info btn-sm border-0 mt-2" type="submit" name="submit">Sign In</button>
 						<p class="forgot"><a href="">Forgot Password?</a></p>
 					</form>
 					</div>
