@@ -108,44 +108,8 @@ def color_filter(type:str, image:Image):
     return image
 
 # ENDPOINTS --------------------------
-# image-manipulation
-class Triggered(generics.ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    renderer_classes = [JSONRenderer]
-    throttle_classes = [UserRateThrottle]
 
-    def get(self, request):
-        try:
-            # checking if the image query is supplied
-            if 'image' not in request.GET:
-                return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
-            url = request.GET.get("image")
-
-            # checking content type
-            if check_content_type(url) not in ACCEPTED_CONTENT: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
-
-            # doing all the stuff
-            with Image.open(requests.get(url, stream=True).raw) as image, Image.open("api/utilities/triggered.png") as triggered, Image.open("api/utilities/red.jpg") as red:
-                filename = generate_name()
-                image = image.resize(red.size)
-                image = image.convert("RGB")
-                image.paste(triggered, (0, 181))
-                image = Image.blend(image.convert("RGBA"), red.convert("RGBA"), alpha=.4)
-                save_image(image, f'files/{filename}.png')
-
-            usage['triggered'] += 1
-            return FileResponse(open(f'files/{filename}.png', 'rb'))
-        finally:
-            # deleting the created file after sending it
-            try:
-                delete_image(f"files/{filename}.png")
-            except:
-                pass
-
-    def post(self, request):
-        # not allowing methods other than GET
-        return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+# Image Editing & Effects
 
 class Blur(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
@@ -678,6 +642,46 @@ class ColorFilter(generics.ListCreateAPIView):
                 save_image(image, f'files/{filename}.png')
 
             usage['colorfilter'] += 1
+            return FileResponse(open(f'files/{filename}.png', 'rb'))
+        finally:
+            # deleting the created file after sending it
+            try:
+                delete_image(f"files/{filename}.png")
+            except:
+                pass
+
+    def post(self, request):
+        # not allowing methods other than GET
+        return JsonResponse({"detail":"Method \"POST\" not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+# Memes
+
+class Triggered(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+    throttle_classes = [UserRateThrottle]
+
+    def get(self, request):
+        try:
+            # checking if the image query is supplied
+            if 'image' not in request.GET:
+                return JsonResponse({"detail":"missing image query."}, status=status.HTTP_400_BAD_REQUEST)
+            url = request.GET.get("image")
+
+            # checking content type
+            if check_content_type(url) not in ACCEPTED_CONTENT: return JsonResponse({"detail":"invalid image content type."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # doing all the stuff
+            with Image.open(requests.get(url, stream=True).raw) as image, Image.open("api/utilities/triggered.png") as triggered, Image.open("api/utilities/red.jpg") as red:
+                filename = generate_name()
+                image = image.resize(red.size)
+                image = image.convert("RGB")
+                image.paste(triggered, (0, 181))
+                image = Image.blend(image.convert("RGBA"), red.convert("RGBA"), alpha=.4)
+                save_image(image, f'files/{filename}.png')
+
+            usage['triggered'] += 1
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
