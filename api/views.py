@@ -1,7 +1,8 @@
 from typing import ByteString
 from django.http.response import HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import render, redirect
-from .forms import CreateUserForm
+from .forms import CreateUserForm, KeyRegisterForm
+from .models import SubscriptionKeys, Subscriptions
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from ratelimit.decorators import ratelimit
@@ -18,7 +19,7 @@ from rest_framework import status
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
 from .usage import human_timedelta, uptime, usage
-import datetime, string, random, urllib
+import datetime, string, random, urllib, datetime
 from io import StringIO, BytesIO
 
 # FRONT-END VIEWS --------------
@@ -29,14 +30,35 @@ def home(request):
     return render(request, "index.html")
 
 # dashboard
-@ratelimit(key="ip", rate="30/m", method=["GET"], block=True)
+@ratelimit(key="ip", rate="15/m", method=["GET", "POST"], block=True)
 def dashboard(request):
     if not request.user.is_authenticated:
         return redirect("login")
-    try:
-        token = Token.objects.get(user=request.user).key
+    form = KeyRegisterForm()
+
+    date_now = datetime.date.today()
+    try: 
+        user = Subscriptions.objects.get(user=request.user)
+        days_left = (user.subscription_end - date_now).days
+        token = user.token
     except:
+        days_left = None
         token = "None"
+
+    if request.method == 'POST':
+        form = KeyRegisterForm(request.POST)
+        if form.is_valid():
+            # check if user already has an active subscription, if he does, add 30 days to the subscription_end he currently has
+            user_exists = Subscriptions.objects.filter(user=request.user)#.update(field2='cool')
+            if not user_exists:
+                Subscriptions.objects.create(user=request.user, token=Token.objects.create(user=request.user), subscription_start=date_now, subscription_end=date_now+datetime.timedelta(days=30))
+            else:
+                user = Subscriptions.objects.get(user=request.user)
+                subscription_end = user.subscription_end
+                user_exists.update(subscription_end=subscription_end + datetime.timedelta(days=30))
+
+            messages.success(request, "Subscription added succesfully.")
+            return redirect("dashboard")
 
     # gotta cache these things so it won't hurt my server, but it works for now. (update values once every x minutes)
     total = sum(usage.values())
@@ -72,6 +94,10 @@ def dashboard(request):
         "hornylicense2": usage['hornylicense2'],
         "whodidthis": usage['whodidthis'],
         "colorviewer": usage['colorviewer'],
+        "form": form,
+        "days_left": days_left,
+
+
 
         "total": total,
         "average": round(total/minutes_uptime, 1),
