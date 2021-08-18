@@ -21,6 +21,7 @@ from rest_framework.renderers import JSONRenderer
 from .usage import human_timedelta, uptime, usage
 import datetime, string, random, urllib, datetime
 from io import StringIO, BytesIO
+from django.core.cache import cache
 
 # FRONT-END VIEWS --------------
 
@@ -59,48 +60,17 @@ def dashboard(request):
 
             messages.success(request, "Subscription added succesfully.")
             return redirect("dashboard")
-
-    # gotta cache these things so it won't hurt my server, but it works for now. (update values once every x minutes)
-    total = sum(usage.values())
-    minutes_uptime = (datetime.datetime.utcnow() - uptime).total_seconds() / 60.0
+    endpoints = [
+        "triggered", "blur", "pixelate", "flip", "rotate", "grayscale", "blend", "enhance", "invert", "grayscaleinvert", "emboss", "contour", "edges", "sepia", "colorfilter",
+        "gay", "urss", "jail", "missionpassed", "wanted", "wasted", "busted", "simpcard", "hornylicense", "hornylicense2", "whodidthis", "colorviewer"
+    ]
     context = {
         "title":"sAPI - Dashboard",
         "token":f"{token}",
-        "uptime": human_timedelta(uptime),
-        "triggered": usage['triggered'],
-        "blur": usage['blur'],
-        "pixelate": usage['pixelate'],
-        "flip": usage['flip'],
-        "rotate": usage['rotate'],
-        "grayscale": usage['grayscale'],
-        "blend": usage['blend'],
-        "enhance": usage['enhance'],
-        "invert": usage['invert'],
-        "grayscaleinvert": usage['grayscaleinvert'],
-        "emboss": usage['emboss'],
-        "contour": usage['contour'],
-        "edges": usage['edges'],
-        "sepia": usage['sepia'],
-        "colorfilter": usage['colorfilter'],
-        "gay": usage['gay'],
-        "urss": usage['urss'],
-        "jail": usage['jail'],
-        "missionpassed": usage['missionpassed'],
-        "wanted": usage['wanted'],
-        "wasted": usage['wasted'],
-        "busted": usage['busted'],
-        "simpcard": usage['simpcard'],
-        "hornylicense": usage['hornylicense'],
-        "hornylicense2": usage['hornylicense2'],
-        "whodidthis": usage['whodidthis'],
-        "colorviewer": usage['colorviewer'],
+        # "uptime": human_timedelta(uptime),
         "form": form,
         "days_left": days_left,
-
-
-
-        "total": total,
-        "average": round(total/minutes_uptime, 1),
+        "endpoint": endpoints,
       }
     return render(request, "dashboard.html", context)
 

@@ -17,10 +17,10 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
-from .usage import human_timedelta, uptime, usage
 import datetime, string, random, urllib
 from io import StringIO, BytesIO
 from rest_framework.throttling import UserRateThrottle
+from django.core.cache import cache
 
 # variables
 ACCEPTED_CONTENT = ['image/jpeg', 'image/png', 'image/gif']
@@ -134,7 +134,7 @@ class Blur(generics.ListCreateAPIView):
                 image = (image.convert('RGB')).filter(ImageFilter.GaussianBlur(2))
                 save_image(image, f'files/{filename}.png')
 
-            usage['blur'] += 1
+            cache.incr('blur')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -171,7 +171,7 @@ class Pixelate(generics.ListCreateAPIView):
                 image = small_image.resize(image.size,Image.NEAREST)
                 save_image(image, f'files/{filename}.png')
 
-            usage['pixelate'] += 1
+            cache.incr('pixelate')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -218,7 +218,7 @@ class Flip(generics.ListCreateAPIView):
                     image = image.transpose(Image.FLIP_LEFT_RIGHT)
                 save_image(image, f'files/{filename}.png')
 
-            usage['flip'] += 1
+            cache.incr('flip')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -265,7 +265,7 @@ class Rotate(generics.ListCreateAPIView):
                     image = (image.rotate(90)).convert('RGB')
                 save_image(image, f'files/{filename}.png')
             
-            usage['rotate'] += 1
+            cache.incr('rotate')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -300,7 +300,7 @@ class Grayscale(generics.ListCreateAPIView):
                 image = (image.resize((255, 255))).convert('L')
                 save_image(image, f'files/{filename}.png')
 
-            usage['grayscale'] += 1
+            cache.incr('grayscale')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -341,7 +341,7 @@ class Blend(generics.ListCreateAPIView):
                 final = Image.blend(image.convert("RGBA"), image2.convert("RGBA"), 0.5)
                 save_image(final, f'files/{filename}.png')
 
-            usage['blend'] += 1
+            cache.incr('blend')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -385,7 +385,7 @@ class Enhance(generics.ListCreateAPIView):
                 else: return JsonResponse({"detail":"invalid type query."}, status=status.HTTP_400_BAD_REQUEST)
                 save_image(image, f'files/{filename}.png')
 
-            usage['enhance'] += 1
+            cache.incr('enhance')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -422,7 +422,7 @@ class Invert(generics.ListCreateAPIView):
                 image = ImageOps.invert(image)
                 save_image(image, f'files/{filename}.png')
 
-            usage['invert'] += 1
+            cache.incr('invert')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -459,7 +459,7 @@ class GrayscaleInvert(generics.ListCreateAPIView):
                 image = ImageOps.invert(image)
                 save_image(image, f'files/{filename}.png')
 
-            usage['grayscaleinvert'] += 1
+            cache.incr('grayscaleinvert')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -495,7 +495,7 @@ class Emboss(generics.ListCreateAPIView):
                 image = image = image.convert('RGB').filter(ImageFilter.EMBOSS)
                 save_image(image, f'files/{filename}.png')
 
-            usage['emboss'] += 1
+            cache.incr('emboss')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -531,7 +531,7 @@ class Contour(generics.ListCreateAPIView):
                 image = image = image.convert('RGB').filter(ImageFilter.CONTOUR)
                 save_image(image, f'files/{filename}.png')
 
-            usage['contour'] += 1
+            cache.incr('contour')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -567,7 +567,7 @@ class Edges(generics.ListCreateAPIView):
                 image = image = image.convert('RGB').filter(ImageFilter.FIND_EDGES)
                 save_image(image, f'files/{filename}.png')
 
-            usage['edges'] += 1
+            cache.incr('edges')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -603,7 +603,7 @@ class Sepia(generics.ListCreateAPIView):
                 image = sepia(image)
                 save_image(image, f'files/{filename}.png')
 
-            usage['sepia'] += 1
+            cache.incr('sepia')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -641,7 +641,7 @@ class ColorFilter(generics.ListCreateAPIView):
                 image = color_filter(color_type, image)
                 save_image(image, f'files/{filename}.png')
 
-            usage['colorfilter'] += 1
+            cache.incr('colorfilter')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -681,7 +681,7 @@ class Triggered(generics.ListCreateAPIView):
                 image = Image.blend(image.convert("RGBA"), red.convert("RGBA"), alpha=.4)
                 save_image(image, f'files/{filename}.png')
 
-            usage['triggered'] += 1
+            cache.incr('triggered')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -717,7 +717,7 @@ class Gay(generics.ListCreateAPIView):
                 final = Image.blend(image.convert("RGBA"), gay.convert("RGBA"), 0.5)
                 save_image(final, f'files/{filename}.png')
 
-            usage['gay'] += 1
+            cache.incr('gay')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -753,7 +753,7 @@ class Urss(generics.ListCreateAPIView):
                 final = Image.blend(image.convert("RGBA"), urss.convert("RGBA"), 0.5)
                 save_image(final, f'files/{filename}.png')
 
-            usage['urss'] += 1
+            cache.incr('urss')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -790,7 +790,7 @@ class Jail(generics.ListCreateAPIView):
                 image.paste(jail, (0,0), jail.convert("RGBA"))
                 save_image(image, f'files/{filename}.png')
 
-            usage['jail'] += 1
+            cache.incr('jail')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -827,7 +827,7 @@ class MissionPassed(generics.ListCreateAPIView):
                 image.paste(mission, (0,0), mission.convert("RGBA"))
                 save_image(image, f'files/{filename}.png')
 
-            usage['missionpassed'] += 1
+            cache.incr('missionpassed')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -864,7 +864,7 @@ class Wanted(generics.ListCreateAPIView):
                 wanted.paste(image, (71,177))
                 save_image(wanted, f'files/{filename}.png')
 
-            usage['wanted'] += 1
+            cache.incr('wanted')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -901,7 +901,7 @@ class Wasted(generics.ListCreateAPIView):
                 image.paste(wasted, (0,0), wasted.convert("RGBA"))
                 save_image(image, f'files/{filename}.png')
 
-            usage['wasted'] += 1
+            cache.incr('wasted')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -938,7 +938,7 @@ class Busted(generics.ListCreateAPIView):
                 image.paste(busted, (0,0), busted.convert("RGBA"))
                 save_image(image, f'files/{filename}.png')
 
-            usage['busted'] += 1
+            cache.incr('busted')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -975,7 +975,7 @@ class SimpCard(generics.ListCreateAPIView):
                 simpcard.paste(image, (43,50))
                 save_image(simpcard, f'files/{filename}.png')
 
-            usage['simpcard'] += 1
+            cache.incr('simpcard')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -1014,7 +1014,7 @@ class HornyLicense(generics.ListCreateAPIView):
                 transparent.paste(license, (0,0), license.convert('RGBA'))
                 save_image(transparent, f'files/{filename}.png')
 
-            usage['hornylicense'] += 1
+            cache.incr('hornylicense')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -1051,7 +1051,7 @@ class HornyLicense2(generics.ListCreateAPIView):
                 license.paste(image.convert("RGBA").rotate(22, resample=Image.BICUBIC, expand=True), (54, 160), mask.rotate(22, expand=True))
                 save_image(license, f'files/{filename}.png')
 
-            usage['hornylicense2'] += 1
+            cache.incr('hornylicense2')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -1087,7 +1087,7 @@ class WhoDidThis(generics.ListCreateAPIView):
                 meme.paste(image.convert("RGBA"), (0, 57))
                 save_image(meme, f'files/{filename}.png')
 
-            usage['whodidthis'] += 1
+            cache.incr('whodidthis')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it
@@ -1127,7 +1127,7 @@ class ColorViewer(generics.ListCreateAPIView):
             filename = generate_name()
             save_image(img, f'files/{filename}.png')
 
-            usage['colorviewer'] += 1
+            cache.incr('colorviewer')
             return FileResponse(open(f'files/{filename}.png', 'rb'))
         finally:
             # deleting the created file after sending it

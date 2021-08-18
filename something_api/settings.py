@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+from django.core.cache import cache
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jrhtg#+3=04dhhfot(c&8i2ch1w$qcx5#!(cdxj2_gv$#pqfwv'
+SECRET_KEY = '%*n4swtw^+f2*mnj531g%st5qj=-$hp-ss5tzdjs@@u6e4dqn#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['something-api.com', 'www.something-api.com']
 
 
 # Application definition
@@ -50,7 +52,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '10/minute',
-        'user': '100/minute'
+        'user': '120/minute'
     }
 }
 
@@ -114,6 +116,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Cache
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -133,8 +144,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# every request will be redirected to https
+SECURE_SSL_REDIRECT = True
+
+endpoints = [
+    "triggered", "blur", "pixelate", "flip", "rotate", "grayscale", "blend", "enhance", "invert", "grayscaleinvert", "emboss", "contour", "edges", "sepia", "colorfilter",
+    "gay", "urss", "jail", "missionpassed", "wanted", "wasted", "busted", "simpcard", "hornylicense", "hornylicense2", "whodidthis", "colorviewer"
+]
+
+
+for endpoint in endpoints:
+    cache.set(endpoint, 0, None)
