@@ -48,7 +48,7 @@ class Command(BaseCommand):
 
         scheduler.add_job(
             sub_check,
-            trigger=CronTrigger(second="*/43200"),  # Every 12 hours
+            trigger=CronTrigger(hour="*/12"),  # Every 12 hours
             id="sub_check",  # The `id` assigned to each job MUST be unique
             max_instances=1,
             replace_existing=True,
