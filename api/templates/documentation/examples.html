@@ -2,6 +2,35 @@
 {% load static %}
 {% block body %}
 <div class="container-fluid mx-3">
-    <h1 class="mt-5">Soon</h1>
+    <h1 class="mt-5">Examples</h1>
+    <hr>
+    <h3>Discord.py Image Manipulation Example</h3>
+    <pre><code class="language-python">import aiohttp, io
+    @bot.command()
+    async def gay(ctx, member: discord.Member=None):
+        member = ctx.author if not member else member # if there is no member mentioned, the member will be the message author
+        try:
+            async with aiohttp.ClientSession(headers={'Authorization':'Token yourtoken'}) as session:
+                async with session.get(f'https://www.something-api.com/api/image-manipulation/gay?image={member.avatar_url_as(format="png")}') as r:
+                    image_data = io.BytesIO(await r.read()) # reading the image data off the request
+                    await ctx.send(file=discord.File(image_data,filename="gay.png")) # sending the picture
+        except:
+            raise discord.errors.Forbidden</code></pre>
+    <hr>
+    <h3>Discord.py Embed Image Manipulation Example</h3>
+    <pre><code class="language-python">import aiohttp, io
+    @bot.command()
+    async def gay(ctx, member: discord.Member=None):
+        member = ctx.author if not member else member # if there is no member mentioned, the member will be the message author
+        try:
+            async with aiohttp.ClientSession(headers={'Authorization':'Token yourtoken'}) as session:
+                async with session.get(f'https://www.something-api.com/api/image-manipulation/gay?image={ctx.author.avatar_url_as(format="png")}') as r:
+                    image_data = io.BytesIO(await r.read())
+                    file=discord.File(image_data,filename="gay.png")
+                    embed = discord.Embed(description="🏳️‍🌈", colour=0xf2c203)
+                    embed.set_image(url="attachment://gay.png")
+                    await ctx.send(embed=embed, file=file)
+        except:
+            raise discord.errors.Forbidden</code></pre>
 </div>
 {% endblock body %}
